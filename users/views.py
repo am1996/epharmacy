@@ -6,7 +6,7 @@ from .forms import LoginForm
 
 class UserLoginView(View):
     def get(self,request):
-        return render(request,"login.html",{"login_form":LoginForm})
+        return render(request,"users/login.html",{"login_form":LoginForm})
 
     def post(self,request):
         form = LoginForm(request.POST)
