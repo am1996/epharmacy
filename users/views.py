@@ -1,8 +1,15 @@
 from django.shortcuts import render,redirect
 from django.views import View
 from django.contrib.auth import authenticate,login
-from .forms import LoginForm
-# Create your views here.
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView
+from .forms import *
+
+class UserRegisterView(CreateView):
+    form_class = RegisterationForm
+
+    success_url = reverse_lazy('login')
+    template_name = 'users/register.html'
 
 class UserLoginView(View):
     def get(self,request):
@@ -24,3 +31,4 @@ class UserLoginView(View):
             form = LoginForm()
 
         return render(request, 'login.html', {'form': form})
+
