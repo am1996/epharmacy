@@ -1,5 +1,7 @@
 from django.shortcuts import HttpResponse,render
+from products.models import Drug
 
 def index(request):
-    return render(request,"index.html")
+    drugs = Drug.objects.all()
+    return render(request,"index.html",{"drugs":drugs})
 
