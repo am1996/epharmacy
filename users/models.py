@@ -16,3 +16,6 @@ class UserProfile(models.Model):
         (3,"Client"),
     ),max_length=10)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete= models.CASCADE)
+
+    def __str__(self):
+        return self.user_id.username
