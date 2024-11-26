@@ -1,0 +1,76 @@
+{% extends "../layouts/base.html" %}
+{% load static %}
+{% block header %}
+<script src="{% static 'js/alpine.min.js' %}" defer></script>
+{% endblock header %}
+{% block content %}
+<h1>Add to inventory</h1>
+<table x-data="tableForm" class="table">
+    <thead>
+        <th>Drug</th>
+        <th>Batch No</th>
+        <th>Quantity</th>
+        <th>Pharmacist Price</th>
+        <th>Public Price</th>
+        <th>Manufacturing Date</th>
+        <th>Expiry Date</th>
+        <th></th>
+    </thead>
+    <template x-for="item in items">
+        <tr>
+            <td><input class="form-control" x-model="item.drug" type="text"></td>
+            <td><input class="form-control" x-model="item.batchNo" type="text"></td>
+            <td><input class="form-control" x-model="item.quantity" type="number"  step="0.01"></td>
+            <td><input class="form-control" x-model="item.pharmacistPrice" type="number" step="0.01"></td>
+            <td><input class="form-control" x-model="item.publicPrice" type="number"  step="0.01"></td>
+            <td><input class="form-control" x-model="item.manufacturingDate" type="date"></td>
+            <td><input class="form-control" x-model="item.expiryDate" type="Date"></td>
+            <td><button class="btn" @click="removeItem(item)">Remove</button></td>
+        </tr>
+    </template>
+    <tfoot>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th><button class="btn btn-success" @click="submit()">submit</button></th>
+        <th><button class="btn btn-success" @click="addItem()">+</button></th>
+    </tfoot>
+<table>
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('tableForm', () => ({
+            items: [{
+                drug:"",
+                quantity:"",
+                batchNo:"",
+                pharmacistPrice:"",
+                publicPrice:"",
+                manufacturingDate:"",
+                expiryDate:""
+            }],
+            submit(){
+                console.log(this.items);
+            },
+            addItem() {
+                this.items.push({
+                    drug:"",
+                    quantity:"",
+                    batchNo:"",
+                    pharmacistPrice:"",
+                    publicPrice:"",
+                    manufacturingDate:"",
+                    expiryDate:""
+                });
+            },
+
+            removeItem(item) {
+                this.items = this.items.filter(i => i !== item);
+            }
+        }));
+    });
+
+</script>
+{% endblock content %}

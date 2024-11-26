@@ -30,5 +30,12 @@
         <th>Route:</th>
         <td>{{ drug.route }}</td>
     </tr>
+    <tr>
+        <th></th>
+        <td>
+            <a class="btn btn-success text-white">Edit</a>
+            <a href={% url "products:delete_drug" drug.pk %} class="btn btn-danger text-white">Delete</a>
+        </td>
+    </tr>
 </table>
 {% endblock content %}
