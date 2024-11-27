@@ -7,7 +7,8 @@ from django.conf import settings
 class InventoryItem(models.Model):
     quantity = models.IntegerField()
     batch_no = models.CharField(max_length=100)
-    price = models.FloatField()
+    pharmacist_price = models.FloatField()
+    public_price = models.FloatField()
     manufacturing_date = models.DateField()
     expiry_date = models.DateField()
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
