@@ -22,14 +22,14 @@
             <template x-for="(item,idx) in items">
                 <tr>
                     <td><input class="form-control" @click="openModal(idx)" x-model="item.drug" type="text" required readonly>
-                    <input :name="'drugs[' + idx + '][drug_id]'" x-model="item.id" type="text" hidden>
+                    <input :name="idx + '__drug_id'" x-model="item.id" type="text" hidden>
                     </td>
-                    <td><input class="form-control" :name="'drugs[' + idx + '][batch_no]'" x-model="item.batchNo" type="text" required></td>
-                    <td><input class="form-control" :name="'drugs['+ idx +'][quantity]'" x-model="item.quantity" type="number" required></td>
-                    <td><input class="form-control" :name="'drugs['+ idx +'][pharmacist_price]'" x-model="item.pharmacistPrice" type="number" step="0.01" required></td>
-                    <td><input class="form-control" :name="'drugs[' + idx + '][public_price]'" x-model="item.publicPrice" type="number"  step="0.01" required></td>
-                    <td><input class="form-control" :name="'drugs[' + idx + '][manufacturing_date]'" x-model="item.manufacturingDate" type="date" required></td>
-                    <td><input class="form-control" :name="'drugs[' + idx + '][expiry_date]'" x-model="item.expiryDate" type="Date" required></td>
+                    <td><input class="form-control" :name="idx + '__batch_no'" x-model="item.batchNo" type="text" required></td>
+                    <td><input class="form-control" :name="idx + '__quantity'" x-model="item.quantity" type="number" required></td>
+                    <td><input class="form-control" :name="idx + '__pharmacist_price'" x-model="item.pharmacistPrice" type="number" step="0.01" required></td>
+                    <td><input class="form-control" :name="idx + '__public_price'" x-model="item.publicPrice" type="number"  step="0.01" required></td>
+                    <td><input class="form-control" :name="idx + '__manufacturing_date'" x-model="item.manufacturingDate" type="date" required></td>
+                    <td><input class="form-control" :name="idx + '__expiry_date'" x-model="item.expiryDate" type="Date" required></td>
                     <td><button type="button" class="btn" @click="removeItem(item)">Remove</button></td>
                 </tr>
             </template>
