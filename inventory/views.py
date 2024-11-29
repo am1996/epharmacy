@@ -9,6 +9,7 @@ from .models import InventoryItem
 
 class IndexView(ListView):
     model = InventoryItem
+    context_object_name = "inventory_items"
     paginate_by = 10
     template_name = "./inventory/index.html"
 

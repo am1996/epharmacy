@@ -5,10 +5,10 @@ from .forms import ProductForm
 # Create your views here.
 
 class IndexView(ListView):
+    paginate_by = 10
     model = Drug
     template_name = "./products/index.html"
     context_object_name = 'drugs'
-    paginate_by = 10
 
 class DetailsDrugView(DetailView):
     model = Drug
