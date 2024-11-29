@@ -8,6 +8,7 @@ class IndexView(ListView):
     model = Drug
     template_name = "./products/index.html"
     context_object_name = 'drugs'
+    paginate_by = 10
 
 class DetailsDrugView(DetailView):
     model = Drug
