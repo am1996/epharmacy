@@ -1,13 +1,30 @@
 from django.shortcuts import render,redirect
-from django.views.generic import CreateView,ListView,DetailView,DeleteView,UpdateView
+from django.views.generic import ListView,DetailView,DeleteView,UpdateView
 from django.views import View
 from products.models import Drug
 from epharmacy.utils import parse_querydict
-from .forms import InventoryItemForm
+from .forms import *
 from .models import InventoryItem
+from django.urls import reverse_lazy
 # Create your views here.
 
-class IndexView(ListView):
+class InventoryDetailView(DetailView):
+    model = InventoryItem
+    context_object_name = "inventory_item"
+    template_name = "./inventory/details.html"
+
+class DeleteDrugView(DeleteView):
+    model = InventoryItem
+    success_url = reverse_lazy("inventory:index_inventory")
+    template_name = "./inventory/confirm_delete.html"
+
+class InventoryEditView(UpdateView):
+    model = InventoryItem
+    form_class = InventoryItemEditForm
+    template_name = "./inventory/update.html"
+    success_url = reverse_lazy("inventory:index_inventory")
+
+class IndexInventoryView(ListView):
     model = InventoryItem
     context_object_name = "inventory_items"
     paginate_by = 10

@@ -14,3 +14,6 @@ class InventoryItem(models.Model):
     expiry_date = models.DateField()
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     drug_id = models.ForeignKey(Drug, related_name="drugId",on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.drug_id.name + " | " + self.batch_no

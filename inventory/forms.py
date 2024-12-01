@@ -1,7 +1,6 @@
 from django.forms import ModelForm
 from django import forms
 from .models import InventoryItem
-from datetime import datetime
 
 class InventoryItemForm(ModelForm):
     class Meta:
@@ -52,5 +51,14 @@ class InventoryItemForm(ModelForm):
             raise forms.ValidationError('Quantity can not be less than or equal to 0.')
         return quantity
     
-    
-    
+class InventoryItemEditForm(InventoryItemForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+    class Meta:
+        model = InventoryItem
+        exclude = ['id','drug_id','created_by']
+        required = True
+    expiry_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    manufacturing_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
