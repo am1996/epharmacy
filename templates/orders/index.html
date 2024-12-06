@@ -6,7 +6,7 @@
     {% for item in inventory %}
     <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="card m-2">
-            <img class="card-img-top" src="{% static 'imgs/drug.png' %}" alt="Durg">
+            <img class="card-img-top" src="/media/{{ item.drug_id__img }}" alt="Durg">
             <div class="card-body">
                 <h6 class="card-title"><b>{{ item.drug_id__name }}</b></h6>
                 <p class="card-text">Available Quantity: {{item.total_quantity}}</p>

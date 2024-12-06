@@ -133,3 +133,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'  # URL accessible to users
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 1209600 # 2 weeks till cookies expire.
