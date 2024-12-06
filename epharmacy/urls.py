@@ -8,6 +8,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('products/',include("products.urls",namespace="products")),
     path('inventory/',include("inventory.urls",namespace="inventory")),
+    path('orders/',include("orders.urls",namespace="orders")),
     path('user/',include("users.urls",namespace="user")),
     path('', index,name="home"),
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
