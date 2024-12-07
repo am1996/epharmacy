@@ -10,6 +10,8 @@ urlpatterns = [
     path('inventory/',include("inventory.urls",namespace="inventory")),
     path('orders/',include("orders.urls",namespace="orders")),
     path('user/',include("users.urls",namespace="user")),
+    path('cart/',CartIndexView.as_view()),
+    path('cart/placeorder',PlaceOrderView.as_view()),
     path('', index,name="home"),
 ]
 

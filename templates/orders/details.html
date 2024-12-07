@@ -14,7 +14,7 @@
         <table class="table">
             <tr>
                 <td>Price: </td>
-                <td>{{ drug.public_price }}</td>
+                <td>{{ drug.max }} L.E</td>
             </tr>
             <tr>
                 <td>Avialable Quantity: </td>
@@ -35,6 +35,9 @@
                         {% csrf_token %}
                         <input name="quantity" min="1" placeholder="1" x-bind:max="quantity" type="number" class="form-control" required/>
                         <input type="number" name="drug_id" value="{{drug.drug_id}}" hidden/>
+                        <input type="text" name="img" value="{{drug.drug_id__img}}" hidden/>
+                        <input type="text" name="price" value="{{drug.max}}" hidden/>
+                        <input type="text" name="name" value="{{drug.drug_id__name}}" hidden/>
                         <div class="input-group-append">
                             <button class="btn btn-success" type="submit">Order</button>
                         </div>
