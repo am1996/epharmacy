@@ -3,6 +3,7 @@ from django.views import View
 from django.contrib.auth import authenticate,login
 from django.urls import reverse_lazy
 from django.views.generic import ListView,DetailView,TemplateView
+from django.contrib.auth.views import PasswordChangeView
 from django.views.generic.edit import CreateView
 from orders.models import *
 from .forms import *
@@ -20,6 +21,11 @@ class UserDashboardView(ListView):
 
 class UserProfileView(TemplateView):
     template_name = "users/profile.html"
+
+class CustomPasswordChangeView(PasswordChangeView):
+    form_class = PasswordChangeCustomForm
+    template_name = 'users/password_change.html' 
+    success_url = reverse_lazy('users:profile')
 
 class UserProfileEditView(View):
     template_name = 'users/edit_profile.html'

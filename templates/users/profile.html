@@ -36,7 +36,10 @@
             {% else %} Client
             {% endif %}
         </p>
-        <p><a href="{% url "user:profile_edit" %}" class="btn btn-success">Edit Profile</a></p>
+        <p>
+            <a href="{% url "user:profile_edit" %}" class="btn btn-success">Edit Profile</a>
+            <a href="{% url "user:changepassword" %}" class="btn btn-warning">Change Password</a>
+        </p>
     </div>
 </div>
 {% endblock content %}

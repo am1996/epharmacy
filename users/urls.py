@@ -5,6 +5,7 @@ app_name="user"
 
 urlpatterns = [
     path("",UserProfileView.as_view(),name="profile"),
+    path("changepassword/",CustomPasswordChangeView.as_view(),name="changepassword"),
     path("login/",UserLoginView.as_view(),name="login"),
     path("register/",UserRegisterView.as_view(),name="register"),
     path("dashboard/",UserDashboardView.as_view(),name="dashboard"),
