@@ -19,7 +19,7 @@ class UserProfile(models.Model):
         (2,"Pharmacist"),
         (3,"Client"),
     ),default= 3)
-    user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete= models.CASCADE, null=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete= models.CASCADE, null=True,related_name="profile")
 
     def __str__(self):
         return self.user.username

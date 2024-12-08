@@ -2,8 +2,49 @@ from django.shortcuts import render,redirect
 from django.views import View
 from django.contrib.auth import authenticate,login
 from django.urls import reverse_lazy
+from django.views.generic import ListView,DetailView,TemplateView
 from django.views.generic.edit import CreateView
+from orders.models import *
 from .forms import *
+
+class UserDashboardView(ListView):
+    model = Order
+    pagination = 10
+    template_name = "users/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        orders = Order.objects.all().filter(status=1)
+        context["orders"] = orders
+        return context
+
+class UserProfileView(TemplateView):
+    template_name = "users/profile.html"
+
+class UserProfileEditView(View):
+    template_name = 'users/edit_profile.html'
+
+    def get(self, request, *args, **kwargs):
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+        return render(request, self.template_name, {
+            'user_form': user_form,
+            'profile_form': profile_form,
+        })
+
+    def post(self, request, *args, **kwargs):
+        user_form = UserEditForm(request.POST, instance=request.user)
+        profile_form = ProfileEditForm(request.POST, instance=request.user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('profile')  # Redirect to a profile page or success page
+
+        return render(request, self.template_name, {
+            'user_form': user_form,
+            'profile_form': profile_form,
+        })
 
 class UserRegisterView(CreateView):
     form_class = RegisterationForm

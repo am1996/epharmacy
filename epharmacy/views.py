@@ -6,7 +6,6 @@ import json
 
 class CartIndexView(View):
     def get(self,request,*args,**kwargs):
-        print(request.user.profile)
         cookies = request.COOKIES.get("epharmacy_cart")
         cart_data = json.loads(cookies) if cookies != None else []
         total = sum(float(item["quantity"]) * float(item["price"]) for item in cart_data) if cart_data else 0
