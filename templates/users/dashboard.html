@@ -43,7 +43,42 @@
     </div>
 </div>
 <h2>Orders</h2>
+<table class="table">
+    <tr>
+        <td>Order No</td>
+        <td>Status</td>
+        <td>Dispensed By</td>
+    </tr>
+{% if not orders %}
+<tr>
+    <td>No orders available</td>
+</tr>
+{% else %}
 {% for order in orders %}
-<li>{{ order }}</li>
+    <tr>
+        <td><a href="">{{ order.id }}</a></td>
+        <td>
+            {% if order.status == "1" %}
+            Pending
+            {% elif order.status == "2" %}
+            Under Delivery
+            {% elif order.status == "3" %}
+            Done
+            {% endif %}</td>
+        <td>{{ order.dispensed_by }}</td>
+    </tr>
 {% endfor %}
+{% endif %}
+</table>
+{% if orders.has_other_pages %}
+    <ul class="pagination">
+        {% if orders.has_previous %}
+            <li><a class="btn" href="?page={{ orders.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        <li class="active btn"><span>{{ orders.number }}</span></li>
+        {% if orders.has_next %}
+            <li><a class="btn" href="?page={{ orders.next_page_number }}">Next</a></li>
+        {% endif %}
+    </ul>
+{% endif %}
 {% endblock content %}

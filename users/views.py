@@ -5,17 +5,34 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView,DetailView,TemplateView
 from django.contrib.auth.views import PasswordChangeView
 from django.views.generic.edit import CreateView
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth import logout
 from orders.models import *
 from .forms import *
 
+class UserLogoutView(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('user:login')
+
 class UserDashboardView(ListView):
     model = Order
-    pagination = 10
     template_name = "users/dashboard.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        orders = Order.objects.all().filter(status=1)
+        if self.request.user.profile.role == 2 or self.request.user.profile.role == 1:
+            orders = Order.objects.all().filter(status=1).order_by("-created_at")
+        else:
+            orders = Order.objects.all().filter(created_by=self.request.user).order_by("-updated_at")
+        paginator = Paginator(orders,10)
+        page = self.request.GET.get("page")
+        try:
+            orders = paginator.page(page)
+        except PageNotAnInteger:
+            orders = paginator.page(1)
+        except EmptyPage:
+            orders = paginator.page(paginator.num_pages)
         context["orders"] = orders
         return context
 
