@@ -12,7 +12,6 @@ class Order(models.Model):
         (3,"Done")
     ],max_length=30,default=1)
     dispensed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='dispensed_orders', default= None,null= True)
-    created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='created_orders')
 
@@ -21,7 +20,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     quantity = models.IntegerField()
-    order_id = models.ForeignKey(Order,on_delete=models.CASCADE)
+    order_id = models.ForeignKey(Order,on_delete=models.CASCADE,related_name="order_items")
     drug_id = models.IntegerField()
     inventory_id = models.ForeignKey(InventoryItem,on_delete=models.CASCADE,default=None, null= True)
 

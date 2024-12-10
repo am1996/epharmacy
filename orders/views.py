@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
-from django.views.generic import ListView,View
+from django.views.generic import ListView,View,DetailView
 from inventory.models import InventoryItem
+from .models import Order,OrderItem
 from django.db.models import Sum,Max
 import json
 import uuid
@@ -36,3 +37,16 @@ class IndexOrdersView(ListView):
         return {
             "inventory": inventory
         }
+    
+class OrderedOrderDetailsView(DetailView):
+    model = Order
+    pk_url_kwarg = "pk"
+    template_name = "users/order_details.html"
+    context_object_name = "order"
+
+class OrderDispenseView(View):
+    def get(self,request,*args,**kwargs):
+        pass
+
+    def post(self,request,*args,**kwargs):
+        pass

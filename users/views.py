@@ -22,7 +22,7 @@ class UserDashboardView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.profile.role == 2 or self.request.user.profile.role == 1:
-            orders = Order.objects.all().filter(status=1).order_by("-created_at")
+            orders = Order.objects.all().filter(status=1).order_by("-order_date")
         else:
             orders = Order.objects.all().filter(created_by=self.request.user).order_by("-updated_at")
         paginator = Paginator(orders,10)
@@ -96,3 +96,16 @@ class UserLoginView(View):
 
         return render(request, 'login.html', {'form': form})
 
+class OrderDetailsView(DetailView):
+    model = Order
+    pk_url_kwarg = "pk"
+    template_name = "users/order_details.html"
+    context_object_name = "order"
+
+class OrderDispenseView(View):
+    def get(self,request,*args,**kwargs):
+        return render(request,"users/order_dispense.html")
+
+    def post(self,request,*args,**kwargs):
+        pass
+    
