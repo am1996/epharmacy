@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from django.views import View
+from django.http import Http404
 from django.contrib.auth import authenticate,login
 from django.urls import reverse_lazy
 from django.views.generic import ListView,DetailView,TemplateView
@@ -9,6 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import logout
 from orders.models import *
 from .forms import *
+from django.db import transaction
 
 class UserLogoutView(View):
     def get(self, request, *args, **kwargs):
@@ -104,8 +106,15 @@ class OrderDetailsView(DetailView):
 
 class OrderDispenseView(View):
     def get(self,request,*args,**kwargs):
-        return render(request,"users/order_dispense.html")
+        try:
+            order = Order.objects.get(pk=kwargs["pk"])
+        except Order.DoesNotExist:
+            raise Http404("Object does not exist.")
+        return render(request,"users/order_dispense.html",{
+            "order": order
+        })
 
+    @transaction.atomic
     def post(self,request,*args,**kwargs):
         pass
     

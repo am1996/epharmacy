@@ -16,4 +16,23 @@ class InventoryItem(models.Model):
     drug_id = models.ForeignKey(Drug, related_name="drugId",on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.drug_id.name + " | " + self.batch_no
+        return str(self.id)
+
+class InventoryItemDispensed(models.Model):
+    inventory_item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name='dispensed_items', null=True)
+    order = models.ForeignKey('orders.Order', on_delete=models.CASCADE, related_name='dispensed_items',null=True)  # Link to the order
+    quantity = models.PositiveIntegerField()  # Quantity dispensed
+    dispensed_by = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)
+    dispensed_at = models.DateTimeField(auto_now_add=True) 
+
+    def __str__(self):
+        return f"{self.quantity} of {self.inventory_item.product_name} dispensed"
+
+    def save(self, *args, **kwargs):
+        # Automatically deduct quantity from inventory
+        if self.pk is None:  # Ensure this is a new record
+            if self.inventory_item.quantity < self.quantity:
+                raise ValueError("Not enough inventory to dispense this quantity.")
+            self.inventory_item.quantity -= self.quantity
+            self.inventory_item.save()
+        super().save(*args, **kwargs)

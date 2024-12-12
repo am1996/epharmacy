@@ -1,7 +1,7 @@
 from django.db import models
 from products.models import Drug
 from django.conf import settings
-from inventory.models import InventoryItem
+from inventory.models import InventoryItem,InventoryItemDispensed
 # Create your models here.
 
 class Order(models.Model):
@@ -22,10 +22,20 @@ class OrderItem(models.Model):
     quantity = models.IntegerField()
     order_id = models.ForeignKey(Order,on_delete=models.CASCADE,related_name="order_items")
     drug_id = models.IntegerField()
-    inventory_id = models.ForeignKey(InventoryItem,on_delete=models.CASCADE,default=None, null= True)
+    inventory_id = models.ForeignKey(InventoryItemDispensed,on_delete=models.CASCADE,default=None, null= True)
 
     def __str__(self):
         return str(self.id) + " | Quantity: " + str(self.quantity)
+
+    @property
+    def inventory(self):
+        try:
+            inv = InventoryItem.objects.filter(drug_id=self.drug_id)
+            items = list(inv)
+            print(inv)
+            return items
+        except InventoryItem.DoesNotExist:
+            return None
 
     @property
     def drug(self):
