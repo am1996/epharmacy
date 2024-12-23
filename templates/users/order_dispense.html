@@ -1,0 +1,53 @@
+{% extends "../layouts/base.html" %}
+{% load queryset_to_json %} 
+{% load static %}
+{% block header %}
+<script src="{% static 'js/alpine.min.js' %}" defer></script>
+{% endblock header %}
+{% load static %}
+{% block content %}
+<h1>Dispense Order no {{ order }}</h1>
+{{errors}}
+<div x-data="tableForm">
+    <form method="POST">
+        {% csrf_token %}
+        <table  class="table">
+            <thead>
+                <th>Drug Name</th>
+                <th>Quantity</th>
+                <th>Inventory(Exp Date | Quantity | Public Price)</th>
+                <th>Quantity</th>
+                <th></th>
+            </thead>
+            <tbody>
+                {% for item in order.order_items.all %}
+                <tr>
+                    <td>
+                        <input name="{{forloop.counter}}__drug_id" value="{{item.drug_id}}" type="text" hidden>
+                        <input name="{{forloop.counter}}__order" value="{{ order.pk }}" type="text" hidden>
+                        {{item.drug.name}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td>
+                        <select name="{{forloop.counter}}__inventory_item" class="form-control">
+                            {% for item in item.inventory %}
+                                <option value="{{item.id}}">{{ item.expiry_date }} | {{ item.quantity }} | {{ item.public_price }} L.E</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><input name="{{forloop.counter}}__quantity" type="number" min="1" class="form-control" required/></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-success float-right" type="Submit">Dispense</button>
+    </form>
+</div>
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('tableForm', () => ({
+            inventory:`{{ order_items|safe }}`.replace("'","")
+        }));
+    });
+
+</script>
+{% endblock content %}

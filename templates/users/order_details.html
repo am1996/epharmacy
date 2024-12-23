@@ -1,0 +1,44 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<div class="col-12">
+    <table class="table">
+        <tr>
+            <td><b>Order Number:</b> {{ order.id }}</td>
+            <td><b>Order Date:</b> {{ order.order_date }}</td>
+            <td><b>Status:</b>
+                {% if order.status == "1" %}Pending
+                {% elif order.status == "2" %}Under Delivery
+                {% else %}Done
+                {% endif %}
+            </td>
+            {% if order.dispensed_by %}
+            <td><b>Dispensed By:</b>{{ order.dispensed_by.username }}
+            {% endif %}
+        </tr>
+        <tr>
+            
+        </tr>
+    </table>
+    <table class="table">
+        <tr>
+            <td>Name</td>
+            <td>Quantity</td>
+            <td>Dispensed</td>
+        </tr>
+    {% for item in order.order_items.all %}
+        <tr>
+            <td>{{ item.drug.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{% if item.inventory_id == None %}Not Dispensed {% else %}Dispensed{% endif %}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% if request.user.profile.role == 1 or request.user.profile.role == 2 %}
+        {% if order.status == "1" %}
+        <a class="btn btn-success text-white" href="{% url "user:order_dispense" order.pk %}">Dispense</a>
+        {% else %}
+        <a class="btn btn-success text-white">Change Status to delivered.</a>
+        {% endif %}
+    {% endif %}
+<div class="col-md-6">
+{% endblock %}
