@@ -49,9 +49,7 @@ class InventoryItemDispensedForm(forms.ModelForm):
         model = InventoryItemDispensed
         fields = "__all__"
         
-    def save(self,request ,commit=True):
+    def prepare(self,request):
         instance = super().save(commit=False)
         instance.dispensed_by = request.user
-        if commit:
-            instance.save()
         return instance

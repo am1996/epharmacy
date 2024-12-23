@@ -13,7 +13,6 @@ from orders.models import *
 from .forms import *
 from django.db import transaction
 from epharmacy.utils import parse_querydict
-from django.core import serializers
 
 class UserLogoutView(View):
     def get(self, request, *args, **kwargs):
@@ -113,17 +112,18 @@ class OrderDispenseView(View):
             order = Order.objects.get(pk=kwargs["pk"])
         except Order.DoesNotExist:
             raise Http404("Object does not exist.")
-        order_items = []
+        inventory = []
         for order_item in order.order_items.all():
-            order_items.append( serializers.serialize('json',order_item.inventory) )
-        print(order_items)
+            inventory.append( list(order_item.inventory_data_as_list) )
+        
         return render(request,"users/order_dispense.html",{
             "order": order,
-            "order_items": order_items
+            "inventory": json.dumps(inventory,ensure_ascii=False)
         })
 
     @transaction.atomic
     def post(self,request,*args,**kwargs):
+        data = parse_querydict(request.POST)
         try:
             order = Order.objects.get(pk=kwargs["pk"])
         except Order.DoesNotExist:
@@ -132,8 +132,8 @@ class OrderDispenseView(View):
         for inv_item in data.values():
             form = InventoryItemDispensedForm(inv_item)
             if form.is_valid():
-                inv = form.save(request)
+                inv = form.prepare(request)
             else:
                 context = {"errors":form.errors,"order":order}
                 return render(request,"users/order_dispense.html",context)
-        return redirect("/inventory")    
+        return redirect("/inventory")

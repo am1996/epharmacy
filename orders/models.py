@@ -36,6 +36,29 @@ class OrderItem(models.Model):
         except InventoryItem.DoesNotExist:
             return None
 
+
+    @property
+    def inventory_data_as_list(self):
+        try:
+            inv = InventoryItem.objects.filter(drug_id=self.id)  # Use self.id instead of self.drug_id
+            items = [
+                {
+                    'id': item.id,
+                    'quantity': item.quantity, 
+                    'batch_no' : item.quantity,
+                    'pharmacist_price' : item.pharmacist_price,
+                    'public_price' : item.public_price,
+                    'manufacturing_date' : item.manufacturing_date.isoformat(),
+                    'expiry_date': item.expiry_date.isoformat(),
+                    'drug_id': item.drug_id.id,
+                    'drug_name': item.drug_id.name
+                } 
+                for item in inv
+            ]
+            return items
+        except InventoryItem.DoesNotExist:
+            return []
+
     @property
     def drug(self):
         try:

@@ -1,6 +1,7 @@
 {% extends "../layouts/base.html" %}
 {% block content %}
 <div class="col-12">
+    {% if request.user.profile.role == 1 or request.user.profile.role == 2 %}
     <table class="table">
         <tr>
             <td><b>Order Number:</b> {{ order.id }}</td>
@@ -16,9 +17,17 @@
             {% endif %}
         </tr>
         <tr>
-            
+            <td><b>Customer Username:</b> {{ order.created_by.username }}</td>
+            <td><b>Customer Fullname:</b> {{ order.created_by.fullname }}</td>
+            <td><b>Customer Address:</b> {{ order.created_by.profile.address }}</td>
+        </tr>
+        <tr>
+            <td><b>Customer Phone Number:</b> {{ order.created_by.profile.phone_number }}</td>
+            <td><b>Customer Email:</b> {{ order.created_by.email }}</td>
+            <td></td>
         </tr>
     </table>
+    {% endif %}
     <table class="table">
         <tr>
             <td>Name</td>
