@@ -1,5 +1,8 @@
 {% extends "../layouts/base.html" %}
 {% block content %}
+{% for message in messages %}
+    <p class="alert alert-success">{{ message }}</p>
+{% endfor %}
 <h2>Dashboard</h2>
 <div class="d-flex flex-wrap">
     <div class="col-md-4 col-sm-6 col-xs-12">
@@ -42,19 +45,22 @@
         </p>
     </div>
 </div>
-<h2>Orders</h2>
+
+{# Orders Under Dispensing ##}
+<h2>Orders Under Dispensing</h2>
 <table class="table">
     <tr>
         <td>Order No</td>
         <td>Status</td>
         <td>Dispensed By</td>
     </tr>
-{% if not orders %}
+{% if not orders_under_dispensing %}
 <tr>
-    <td>No orders available</td>
+    <td>No orders under dispensing available</td>
 </tr>
 {% else %}
-{% for order in orders %}
+
+{% for order in orders_under_dispensing %}
     <tr>
         <td><a href="{% url "user:order_details" order.id %}">{{ order.id }}</a></td>
         <td>
@@ -81,4 +87,5 @@
         {% endif %}
     </ul>
 {% endif %}
+
 {% endblock content %}

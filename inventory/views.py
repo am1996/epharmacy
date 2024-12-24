@@ -6,6 +6,7 @@ from epharmacy.utils import parse_querydict
 from .forms import *
 from .models import InventoryItem
 from django.urls import reverse_lazy
+from django.contrib import messages
 # Create your views here.
 
 class InventoryDetailView(DetailView):
@@ -47,4 +48,5 @@ class InventoryCreateView(View):
             else:
                 context = {"drugs": Drug.objects.values('id','name'),"errors":form.errors}
                 return render(request,"./inventory/create.html",context)
+        messages.success(request,"Successfully added to inventory.")
         return redirect("/inventory")

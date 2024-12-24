@@ -11,6 +11,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import logout
 from orders.models import *
 from .forms import *
+from django.contrib import messages
 from django.db import transaction
 from epharmacy.utils import parse_querydict
 
@@ -22,22 +23,33 @@ class UserLogoutView(View):
 class UserDashboardView(ListView):
     model = Order
     template_name = "users/dashboard.html"
-
+    def return_paginator(self,queryset,page_param="page"):
+        paginator = Paginator(queryset,10)
+        page = self.request.GET.get("page")
+        try:
+            queryset = paginator.page(page)
+        except PageNotAnInteger:
+            queryset = paginator.page(1)
+        except EmptyPage:
+            queryset = paginator.page(paginator.num_pages)
+        return queryset
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.profile.role == 2 or self.request.user.profile.role == 1:
-            orders = Order.objects.all().filter(status=1).order_by("-order_date")
+            orders_under_dispensing_query_set = Order.objects.all().filter(status=1).order_by("-order_date")
+            orders_under_delivery_query_set = Order.objects.all().filter(status=2).order_by("-order_date")
+            orders_done_query_set = Order.objects.all().filter(status=3).order_by("-order_date")
+            orders_under_dispensing = self.return_paginator(orders_under_dispensing_query_set)
+            orders_under_delivery = self.return_paginator(orders_under_delivery_query_set)
+            orders_done = self.return_paginator(orders_done_query_set)
+            context["orders_under_dispensing"] = orders_under_dispensing
+            context["orders_under_delivery"] = orders_under_delivery
+            context["orders_done"] = orders_done
         else:
-            orders = Order.objects.all().filter(created_by=self.request.user).order_by("-updated_at")
-        paginator = Paginator(orders,10)
-        page = self.request.GET.get("page")
-        try:
-            orders = paginator.page(page)
-        except PageNotAnInteger:
-            orders = paginator.page(1)
-        except EmptyPage:
-            orders = paginator.page(paginator.num_pages)
-        context["orders"] = orders
+            my_orders = Order.objects.all().filter(created_by=self.request.user).order_by("-updated_at")
+            my_orders = self.return_paginator(my_orders)
+            context["my_orders"] = my_orders
         return context
 
 class UserProfileView(TemplateView):
@@ -124,16 +136,21 @@ class OrderDispenseView(View):
     @transaction.atomic
     def post(self,request,*args,**kwargs):
         data = parse_querydict(request.POST)
+        items = []
         try:
             order = Order.objects.get(pk=kwargs["pk"])
         except Order.DoesNotExist:
             raise Http404("Object does not exist.")
-        data = parse_querydict(request.POST)
         for inv_item in data.values():
+            print(inv_item)
             form = InventoryItemDispensedForm(inv_item)
             if form.is_valid():
-                inv = form.prepare(request)
+                inv = form.save(commit=False)
+                items.append(inv)
             else:
                 context = {"errors":form.errors,"order":order}
                 return render(request,"users/order_dispense.html",context)
-        return redirect("/inventory")
+        InventoryItemDispensed.objects.bulk_create(items)
+        Order.objects.filter(pk=kwargs["pk"]).update(status=2,comment=request.POST["comment"],dispensed_by=request.user)
+        messages.success(request,f"Order No. {order.pk} was dispensed.")
+        return redirect("/user/dashboard")

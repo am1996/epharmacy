@@ -48,8 +48,3 @@ class InventoryItemDispensedForm(forms.ModelForm):
     class Meta:
         model = InventoryItemDispensed
         fields = "__all__"
-        
-    def prepare(self,request):
-        instance = super().save(commit=False)
-        instance.dispensed_by = request.user
-        return instance

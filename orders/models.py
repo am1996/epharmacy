@@ -11,6 +11,7 @@ class Order(models.Model):
         (2,"Under Delivery"),
         (3,"Done")
     ],max_length=30,default=1)
+    comment = models.TextField(null=True,blank=True)
     dispensed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='dispensed_orders', default= None,null= True)
     updated_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='created_orders')
@@ -40,7 +41,7 @@ class OrderItem(models.Model):
     @property
     def inventory_data_as_list(self):
         try:
-            inv = InventoryItem.objects.filter(drug_id=self.id)  # Use self.id instead of self.drug_id
+            inv = InventoryItem.objects.filter(drug_id=self.id,quantity__gt=0)  # Use self.id instead of self.drug_id
             items = [
                 {
                     'id': item.id,

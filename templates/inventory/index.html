@@ -1,6 +1,9 @@
 {% extends "../layouts/base.html" %}
 {% block content %}
 <h1>Inventory</h1>
+{% for message in messages %}
+    <p class="alert alert-success">{{ message }}</p>
+{% endfor %}
 <table class="table">
     <tr>
         <th>id.</th>

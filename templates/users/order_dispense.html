@@ -54,6 +54,10 @@
 <div x-data="tableForm">
     <form method="POST">
         {% csrf_token %}
+        <div>
+            <label><b>Order Comment</b></label>
+            <textarea name="comment" class="form-control"></textarea>
+        </div>
         <table class="table">
             <thead>
                 <th>Drug</th>
@@ -67,13 +71,13 @@
                         <td>
                             <select x-model="item.drug" :name="itemIdx + '__drug_id'" @change="updateItem(itemIdx)" x-ref="drugChoice" class="form-control">
                                 <template x-for="(d, drugIdx) in inventory">
-                                    <option :value="d.drug_id" x-text="d[0].drug_name"></option>
+                                    <option :value="d[0].drug_id" x-text="d[0].drug_name"></option>
                                 </template>
                             </select>
                             <input :name="itemIdx +'__order'" value="{{ order.pk }}" type="text" hidden>
                         </td>
                         <td>
-                            <select :name="itemIdx +'__inventory_id'" @change="updateInventoryChosen(itemIdx)" x-ref="invChoice" class="form-control">
+                            <select :name="itemIdx +'__inventory_item'" @change="updateInventoryChosen(itemIdx)" x-ref="invChoice" class="form-control">
                                 <template x-for="(d,invIdx) in inventory[items[itemIdx].idx]">
                                     <option x-bind:value="d.id" x-text="d.expiry_date + ' | ' + d.quantity + ' Boxes'"></option>
                                 </template>
