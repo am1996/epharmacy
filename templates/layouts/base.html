@@ -24,14 +24,22 @@
                     <a class="nav-link" href="{% url "home" %}">Home</a>
                 </li>
                 
-                {% if request.user.profile.role == 1 %}
+                {% if request.user.profile.role == 1 and request.user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "inventory:index_inventory" %}">Inventory</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "products:index_drug" %}">Products</a>
-                </li>                    
+                </li> 
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "orders:index_orders" %}">Order</a>
+                </li>
+                {% else %}                        
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "orders:index_orders" %}">Order</a>
+                </li>
                 {% endif %}
+    
             </ul>
             <ul class="navbar-nav">
                 {% if request.user.is_authenticated %}

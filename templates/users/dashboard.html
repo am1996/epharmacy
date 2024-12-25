@@ -76,16 +76,100 @@
 {% endfor %}
 {% endif %}
 </table>
-{% if orders.has_other_pages %}
+{% if orders_under_dispensing.has_other_pages %}
     <ul class="pagination">
-        {% if orders.has_previous %}
-            <li><a class="btn" href="?page={{ orders.previous_page_number }}">Previous</a></li>
+        {% if orders_under_dispensing.has_previous %}
+            <li><a class="btn" href="?pgdp={{ orders_under_dispensing.previous_page_number }}">Previous</a></li>
         {% endif %}
-        <li class="active btn"><span>{{ orders.number }}</span></li>
-        {% if orders.has_next %}
-            <li><a class="btn" href="?page={{ orders.next_page_number }}">Next</a></li>
+        <li class="active btn"><span>{{ orders_under_dispensing.number }}</span></li>
+        {% if orders_under_dispensing.has_next %}
+            <li><a class="btn" href="?pgdp={{ orders_under_dispensing.next_page_number }}">Next</a></li>
         {% endif %}
     </ul>
 {% endif %}
+{# End Orders Under Dispensing ##}
+{# Orders Under Delivery ##}
+<h2>Orders Under Delivery</h2>
+<table class="table">
+    <tr>
+        <td>Order No</td>
+        <td>Status</td>
+        <td>Dispensed By</td>
+    </tr>
+{% if not orders_under_delivery %}
+<tr>
+    <td>No orders under delivery available</td>
+</tr>
+{% else %}
 
+{% for order in orders_under_delivery %}
+    <tr>
+        <td><a href="{% url "user:order_details" order.id %}">{{ order.id }}</a></td>
+        <td>
+            {% if order.status == "1" %}
+            Pending
+            {% elif order.status == "2" %}
+            Under Delivery
+            {% elif order.status == "3" %}
+            Done
+            {% endif %}</td>
+        <td>{{ order.dispensed_by }}</td>
+    </tr>
+{% endfor %}
+{% endif %}
+</table>
+{% if orders_under_delivery.has_other_pages %}
+    <ul class="pagination">
+        {% if orders_under_delivery.has_previous %}
+            <li><a class="btn" href="?pgud={{ orders_under_delivery.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        <li class="active btn"><span>{{ orders_under_delivery.number }}</span></li>
+        {% if orders_under_delivery.has_next %}
+            <li><a class="btn" href="?pgud={{ orders_under_delivery.next_page_number }}">Next</a></li>
+        {% endif %}
+    </ul>
+{% endif %}
+{# End Orders Under Delivery ##}
+{# Orders Delivered ##}
+<h2>Orders Delivered</h2>
+<table class="table">
+    <tr>
+        <td>Order No</td>
+        <td>Status</td>
+        <td>Dispensed By</td>
+    </tr>
+{% if not orders_done %}
+<tr>
+    <td>No orders delivered available</td>
+</tr>
+{% else %}
+
+{% for order in orders_done %}
+    <tr>
+        <td><a href="{% url "user:order_details" order.id %}">{{ order.id }}</a></td>
+        <td>
+            {% if order.status == "1" %}
+            Pending
+            {% elif order.status == "2" %}
+            Under Delivery
+            {% elif order.status == "3" %}
+            Done
+            {% endif %}</td>
+        <td>{{ order.dispensed_by }}</td>
+    </tr>
+{% endfor %}
+{% endif %}
+</table>
+{% if orders_done.has_other_pages %}
+    <ul class="pagination">
+        {% if orders_done.has_previous %}
+            <li><a class="btn" href="?pgod={{ orders_done.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        <li class="active btn"><span>{{ orders_done.number }}</span></li>
+        {% if orders_done.has_next %}
+            <li><a class="btn" href="?pgod={{ orders_done.next_page_number }}">Next</a></li>
+        {% endif %}
+    </ul>
+{% endif %}
+{# End Orders Delivered ##}
 {% endblock content %}

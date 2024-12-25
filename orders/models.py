@@ -23,7 +23,6 @@ class OrderItem(models.Model):
     quantity = models.IntegerField()
     order_id = models.ForeignKey(Order,on_delete=models.CASCADE,related_name="order_items")
     drug_id = models.IntegerField()
-    inventory_id = models.ForeignKey(InventoryItemDispensed,on_delete=models.CASCADE,default=None, null= True)
 
     def __str__(self):
         return str(self.id) + " | Quantity: " + str(self.quantity)
@@ -41,7 +40,7 @@ class OrderItem(models.Model):
     @property
     def inventory_data_as_list(self):
         try:
-            inv = InventoryItem.objects.filter(drug_id=self.id,quantity__gt=0)  # Use self.id instead of self.drug_id
+            inv = InventoryItem.objects.filter(drug_id=self.drug_id,quantity__gt=0)  # Use self.id instead of self.drug_id
             items = [
                 {
                     'id': item.id,
@@ -58,7 +57,7 @@ class OrderItem(models.Model):
             ]
             return items
         except InventoryItem.DoesNotExist:
-            return []
+            return None
 
     @property
     def drug(self):

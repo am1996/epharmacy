@@ -3,8 +3,10 @@ from django.views.generic import View
 from products.models import Drug
 from orders.models import OrderItem,Order
 import json
+from django.views.generic import ListView
+from epharmacy.mixins import AdminRequiredMixin, PharmacistRequiredMixin, ClientRequiredMixin
 
-class CartIndexView(View):
+class CartIndexView(View,ClientRequiredMixin):
     def get(self,request,*args,**kwargs):
         cookies = request.COOKIES.get("epharmacy_cart")
         cart_data = json.loads(cookies) if cookies != None else []
@@ -30,7 +32,7 @@ class CartIndexView(View):
             response.set_cookie("epharmacy_cart",cart_data,httponly=True)
             return response
 
-class PlaceOrderView(View):
+class PlaceOrderView(View,ClientRequiredMixin):
     def post(self,request,*args,**kwargs):
         order_items = []
         cookies = request.COOKIES.get("epharmacy_cart")
@@ -46,7 +48,9 @@ class PlaceOrderView(View):
         response.delete_cookie("epharmacy_cart")
         return response
 
-def index(request):
-    drugs = Drug.objects.all()
-    return render(request,"index.html",{"drugs":drugs})
+class DrugListView(ListView):
+    model = Drug
+    template_name = "index.html"
+    context_object_name = "drugs"
+    paginate_by = "10"
 

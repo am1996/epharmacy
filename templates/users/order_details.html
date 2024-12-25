@@ -28,25 +28,47 @@
         </tr>
     </table>
     {% endif %}
+    <h2>Order Details</h2>
     <table class="table">
         <tr>
             <td>Name</td>
             <td>Quantity</td>
-            <td>Dispensed</td>
         </tr>
     {% for item in order.order_items.all %}
         <tr>
             <td>{{ item.drug.name }}</td>
             <td>{{ item.quantity }}</td>
-            <td>{% if item.inventory_id == None %}Not Dispensed {% else %}Dispensed{% endif %}</td>
         </tr>
     {% endfor %}
     </table>
+    <h2>Dispensed Order Details</h2>
+    <table class="table">
+        <tr>
+            <td>Name</td>
+            <td>Quantity</td>
+            <td>Expiry Date</td>
+        </tr>
+    {% for item in order.dispensed_items.all %}
+        <tr>
+            <td>{{ item.inventory_item.drug_id.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.inventory_item.expiry_date }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    <div>
+        <h5>Order Comment</h5>
+        <hr/>
+        <p>{{ order.comment }}</p>
+    </div>
     {% if request.user.profile.role == 1 or request.user.profile.role == 2 %}
         {% if order.status == "1" %}
-        <a class="btn btn-success text-white" href="{% url "user:order_dispense" order.pk %}">Dispense</a>
-        {% else %}
-        <a class="btn btn-success text-white">Change Status to delivered.</a>
+            <a class="btn btn-success text-white" href="{% url "user:order_dispense" order.pk %}">Dispense</a>
+        {% elif order.status == "2" %}
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success text-white" onclick="return confirm('do you really want to mark order as delivered?')">Change Status to delivered.</button>
+        </form>
         {% endif %}
     {% endif %}
 <div class="col-md-6">

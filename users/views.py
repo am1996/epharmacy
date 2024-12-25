@@ -40,9 +40,9 @@ class UserDashboardView(ListView):
             orders_under_dispensing_query_set = Order.objects.all().filter(status=1).order_by("-order_date")
             orders_under_delivery_query_set = Order.objects.all().filter(status=2).order_by("-order_date")
             orders_done_query_set = Order.objects.all().filter(status=3).order_by("-order_date")
-            orders_under_dispensing = self.return_paginator(orders_under_dispensing_query_set)
-            orders_under_delivery = self.return_paginator(orders_under_delivery_query_set)
-            orders_done = self.return_paginator(orders_done_query_set)
+            orders_under_dispensing = self.return_paginator(orders_under_dispensing_query_set,page_param="pgdp")
+            orders_under_delivery = self.return_paginator(orders_under_delivery_query_set,page_param="pgud")
+            orders_done = self.return_paginator(orders_done_query_set,page_param="pgod")
             context["orders_under_dispensing"] = orders_under_dispensing
             context["orders_under_delivery"] = orders_under_delivery
             context["orders_done"] = orders_done
@@ -118,16 +118,31 @@ class OrderDetailsView(DetailView):
     template_name = "users/order_details.html"
     context_object_name = "order"
 
+    def post(self,request,*args,**kwargs):
+        order = Order.objects.get(pk=kwargs["pk"])
+        order.status = 3
+        order.save()
+        messages.success(request,f"Order no {order.pk} was marked as delivered.")
+        return redirect("/user/dashboard")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order = self.get_object()
+        return context
+
 class OrderDispenseView(View):
     def get(self,request,*args,**kwargs):
         try:
             order = Order.objects.get(pk=kwargs["pk"])
         except Order.DoesNotExist:
             raise Http404("Object does not exist.")
+        if order.status != 1:
+            raise Http404("Order is not under dispensing.")
         inventory = []
         for order_item in order.order_items.all():
-            inventory.append( list(order_item.inventory_data_as_list) )
-        
+            if(len(order_item.inventory_data_as_list) > 0):
+                inventory.append(order_item.inventory_data_as_list)
+        print(inventory)
         return render(request,"users/order_dispense.html",{
             "order": order,
             "inventory": json.dumps(inventory,ensure_ascii=False)

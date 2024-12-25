@@ -12,7 +12,7 @@ urlpatterns = [
     path('user/',include("users.urls",namespace="user")),
     path('cart/',CartIndexView.as_view()),
     path('cart/placeorder',PlaceOrderView.as_view()),
-    path('', index,name="home"),
+    path('', DrugListView.as_view(),name="home"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
