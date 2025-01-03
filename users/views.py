@@ -106,11 +106,12 @@ class UserLoginView(View):
             if user is not None:
                 login(request, user)
                 return redirect('home')
-
+            else:
+                form = LoginForm(request.POST)
         else:
-            form = LoginForm()
+            form = LoginForm(request.POST)
 
-        return render(request, 'login.html', {'form': form})
+        return render(request, './users/login.html', {'login_form': form})
 
 class OrderDetailsView(DetailView):
     model = Order
