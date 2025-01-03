@@ -33,6 +33,7 @@ class DetailOrderView(View):
         if isinstance(cookie_value, str):
             cookie_value = json.loads(cookie_value)
         mutable_querydict["uid"] = str(uuid.uuid4())
+        mutable_querydict["user"] = str(request.user.id)
         cookie_value.append(mutable_querydict)
         j = json.dumps(cookie_value)
         response = redirect("/orders")

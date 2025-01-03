@@ -2,7 +2,18 @@
 {% block content %}
 <form method="POST">
     {% csrf_token %}
-
+    {% if form_login.errors %}
+    <div class="error-summary">
+        <h3>There were some problems with your submission:</h3>
+        <ul>
+            {% for field in form_login %}
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
     {{ login_form.as_p }}
     <input class="btn btn-success" type="submit" value="Login" />
 </form>
