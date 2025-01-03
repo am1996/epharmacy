@@ -88,7 +88,7 @@ class UserProfileEditView(View):
 class UserRegisterView(CreateView):
     form_class = RegisterationForm
 
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('user:login')
     template_name = 'users/register.html'
 
 class UserLoginView(View):
