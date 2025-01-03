@@ -10,7 +10,7 @@
                 <h6 class="card-title"><b>{{ item.name }}</b></h6>
                 <div>
                     <a href="{% url 'products:detail_drug' item.id %}" class="btn btn-primary btn-sm">View Details</a>
-                    <a href="{% url 'orders:index_orders' %}" class="btn btn-success btn-sm">Order</a>
+                    <a href="{% url 'orders:details_orders' item.id %}" class="btn btn-success btn-sm">Order</a>
                 </div>
             </div>
         </div>

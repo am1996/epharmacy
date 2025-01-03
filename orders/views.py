@@ -3,6 +3,8 @@ from django.views.generic import ListView,View,DetailView
 from inventory.models import InventoryItem
 from .models import Order,OrderItem
 from django.db.models import Sum,Max
+from products.models import Drug
+from django.shortcuts import get_object_or_404
 import json
 import uuid
 # Create your views here.
@@ -11,6 +13,17 @@ class DetailOrderView(View):
     def get(self,request,pk):
         item = InventoryItem.objects.values("drug_id","drug_id__img","drug_id__name","drug_id__company","drug_id__data").annotate(total_quantity=Sum("quantity"),max=Max("public_price")).filter(drug_id=pk)
         item = item[0] if item else {}
+        if not item:
+            drug = get_object_or_404(Drug,pk=pk)
+            item = {
+                "drug_id": drug.id,
+                "drug_id__img": drug.img,
+                "drug_id__name": drug.name,
+                "drug_id__company": drug.company,
+                "drug_id__data":drug.data,
+                "total_quantity": 0,
+                "max": drug.price
+            }
         return render(request,"./orders/details.html",{"drug": item})
     
     def post(self, request, *args, **kwargs):
