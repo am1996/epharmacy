@@ -13,7 +13,7 @@ class UserProfile(models.Model):
     gender = models.IntegerField(choices=(
         (1,"Male"),
         (2,"Female")
-    ))
+    ),default=1)
     role = models.IntegerField(choices=(
         (1,"Admin"),
         (2,"Pharmacist"),
