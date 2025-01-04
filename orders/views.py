@@ -48,6 +48,8 @@ class IndexOrdersView(ListView):
     
     def get_context_data(self, **kwargs):
         inventory = InventoryItem.objects.values("drug_id","drug_id__name","drug_id__img").annotate(total_quantity=Sum("quantity")).filter(total_quantity__gt=0)
+        most_ordered = (Drug.objects.annotate(total_orders=Sum('order_item__quantity')).order_by('-total_orders'))[:10]
+        print(most_ordered)
         return {
             "inventory": inventory
         }
