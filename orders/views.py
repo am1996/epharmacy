@@ -48,10 +48,13 @@ class IndexOrdersView(ListView):
     
     def get_context_data(self, **kwargs):
         inventory = InventoryItem.objects.values("drug_id","drug_id__name","drug_id__img").annotate(total_quantity=Sum("quantity")).filter(total_quantity__gt=0)
-        most_ordered = (Drug.objects.annotate(total_orders=Sum('order_item__quantity')).order_by('-total_orders'))[:10]
-        print(most_ordered)
+        user_id = str(self.request.user.id)
+        most_ordered = OrderItem.objects.filter(order_id__created_by=user_id) \
+            .annotate(total_quantity=Sum('quantity')) \
+            .order_by('-total_quantity')[:10]
         return {
-            "inventory": inventory
+            "inventory": inventory,
+            'most_ordered': most_ordered
         }
     
 class OrderedOrderDetailsView(DetailView):
@@ -59,10 +62,3 @@ class OrderedOrderDetailsView(DetailView):
     pk_url_kwarg = "pk"
     template_name = "users/order_details.html"
     context_object_name = "order"
-
-class OrderDispenseView(View):
-    def get(self,request,*args,**kwargs):
-        pass
-
-    def post(self,request,*args,**kwargs):
-        pass
