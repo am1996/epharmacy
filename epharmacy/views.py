@@ -10,6 +10,7 @@ class CartIndexView(View,ClientRequiredMixin):
     def get(self,request,*args,**kwargs):
         cookies = request.COOKIES.get("epharmacy_cart")
         cart_data = json.loads(cookies) if cookies != None else []
+        cart_data = list(filter(lambda item: item["user"] == str(request.user.id), cart_data))
         total = sum(float(item["quantity"]) * float(item["price"]) for item in cart_data) if cart_data else 0
         return render(request,"./cart/index.html",{
             "cart": cart_data,
