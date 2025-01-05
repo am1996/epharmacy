@@ -7,32 +7,33 @@ from .forms import *
 from .models import InventoryItem
 from django.urls import reverse_lazy
 from django.contrib import messages
+from epharmacy.mixins import PharmacistRequiredMixin
 # Create your views here.
 
-class InventoryDetailView(DetailView):
+class InventoryDetailView(PharmacistRequiredMixin, DetailView):
     model = InventoryItem
     context_object_name = "inventory_item"
     template_name = "./inventory/details.html"
 
-class DeleteDrugView(DeleteView):
+class DeleteDrugView(PharmacistRequiredMixin, DeleteView):
     model = InventoryItem
     success_url = reverse_lazy("inventory:index_inventory")
     template_name = "./inventory/confirm_delete.html"
 
-class InventoryEditView(UpdateView):
+class InventoryEditView(PharmacistRequiredMixin, UpdateView):
     model = InventoryItem
     form_class = InventoryItemEditForm
     template_name = "./inventory/update.html"
     success_url = reverse_lazy("inventory:index_inventory")
 
-class IndexInventoryView(ListView):
+class IndexInventoryView(PharmacistRequiredMixin, ListView):
     model = InventoryItem
     ordering = "-quantity"
     context_object_name = "inventory_items"
     paginate_by = 10
     template_name = "./inventory/index.html"
 
-class InventoryCreateView(View):
+class InventoryCreateView(PharmacistRequiredMixin, View):
     def get(self,request,*args,**kwargs):
         context = {"drugs": Drug.objects.values('id','name').order_by('name')}
         return render(request,"./inventory/create.html",context)

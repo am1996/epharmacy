@@ -13,7 +13,14 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
-        <a class="navbar-brand" href="#">E-Pharmacy</a>
+        <a class="navbar-brand" href="#">
+            E-Pharmacy
+            {% if request.user.profile.role == 1 %}
+            <b style="font-size: 0.7rem; color: #999;">[Admin]</b>
+            {% elif request.user.profile.role == 2 %}
+            <b style="font-size: 0.7rem; color: #999;">[Pharmacist]</b>
+            {% endif %}
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -25,11 +32,12 @@
                 </li>
                 {% if request.user.profile.role == 1 and request.user.is_authenticated %}
                 <li class="nav-item">
+                    <!-- To be added -->
+                </li>
+                {% elif request.user.profile.role == 2 and request.user.is_authenticated %}
+                <li class="nav-item">
                     <a class="nav-link" href="{% url "inventory:index_inventory" %}">Inventory</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url "products:index_drug" %}">Products</a>
-                </li> 
                 {% elif request.user.profile.role == 3 and request.user.is_authenticated %}                        
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "orders:index_orders" %}">Order</a>
@@ -49,7 +57,7 @@
                 {% endif %}
                 {% if request.user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "user:dashboard" %}">Dashboard</a>
+                    <a class="nav-link" href="{% url "user:dashboard" %}">{{request.user.username}}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "user:logout" %}">Logout</a>

@@ -59,7 +59,11 @@
     <div>
         <h5>Order Comment</h5>
         <hr/>
-        <p>{{ order.comment }}</p>
+        {% if order.comment %}
+            <p>{{ order.comment }}</p>
+        {% else %}
+        <p>No Comment to show.</p>
+        {% endif %}
     </div>
     {% if request.user.profile.role == 1 or request.user.profile.role == 2 %}
         {% if order.status == "1" %}

@@ -14,7 +14,7 @@ from .forms import *
 from django.contrib import messages
 from django.db import transaction
 from epharmacy.utils import parse_querydict
-
+from epharmacy.mixins import PharmacistRequiredMixin
 class UserLogoutView(View):
     def get(self, request, *args, **kwargs):
         logout(request)
@@ -131,7 +131,7 @@ class OrderDetailsView(DetailView):
         order = self.get_object()
         return context
 
-class OrderDispenseView(View):
+class OrderDispenseView(PharmacistRequiredMixin, View):
     def get(self,request,*args,**kwargs):
         try:
             order = Order.objects.get(pk=kwargs["pk"])
