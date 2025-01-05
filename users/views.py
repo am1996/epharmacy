@@ -58,7 +58,7 @@ class UserProfileView(TemplateView):
 class CustomPasswordChangeView(PasswordChangeView):
     form_class = PasswordChangeCustomForm
     template_name = 'users/password_change.html' 
-    success_url = reverse_lazy('users:profile')
+    success_url = reverse_lazy('user:profile')
 
 class UserProfileEditView(View):
     template_name = 'users/edit_profile.html'
