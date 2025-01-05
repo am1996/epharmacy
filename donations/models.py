@@ -4,7 +4,7 @@ from django.db import models
 class Donation(models.Model):
     donated_by = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='donations')
     product_name = models.CharField(max_length=300)
-    quantity = models.IntegerField(min=1)
+    quantity = models.IntegerField()
     comment = models.TextField()
     image = models.ImageField(upload_to='donations/')
     status = models.CharField(choices= [
