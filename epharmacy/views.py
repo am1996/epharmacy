@@ -4,7 +4,7 @@ from products.models import Drug
 from orders.models import OrderItem,Order
 import json
 from django.views.generic import ListView
-from epharmacy.mixins import AdminRequiredMixin, PharmacistRequiredMixin, ClientRequiredMixin
+from epharmacy.mixins import ClientRequiredMixin
 
 ## Accessible only by client.
 class CartIndexView(ClientRequiredMixin,View):
@@ -55,5 +55,6 @@ class DrugListView(ListView):
     model = Drug
     template_name = "index.html"
     context_object_name = "drugs"
+    ordering = 'name'
     paginate_by = "10"
 
