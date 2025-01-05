@@ -28,7 +28,7 @@ class SearchView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q', '')
         if query:
-            return Drug.objects.filter(name__icontains=query)
+            return Drug.objects.filter(name__iregex=query)
         else:
             return Drug.objects.all()
 
