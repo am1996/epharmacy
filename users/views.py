@@ -108,9 +108,9 @@ class UserLoginView(View):
                 return redirect('home')
             else:
                 form = LoginForm(request.POST)
+                form.errors["__all__"] = form.error_class(["Invalid username or password."])
         else:
             form = LoginForm(request.POST)
-
         return render(request, './users/login.html', {'login_form': form})
 
 class OrderDetailsView(DetailView):

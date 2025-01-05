@@ -4,7 +4,6 @@
     {% csrf_token %}
     {% if form_login.errors %}
     <div class="error-summary">
-        <h3>There were some problems with your submission:</h3>
         <ul>
             {% for field in form_login %}
                 {% for error in field.errors %}

@@ -16,7 +16,7 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}),label='Password')
 
 class UserEditForm(forms.ModelForm):
-    password = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}),label='Email')
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}),label='email address')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
