@@ -40,16 +40,16 @@ class UserDashboardView(ListView):
             orders_under_dispensing_query_set = Order.objects.all().filter(status=1).order_by("-order_date")
             orders_under_delivery_query_set = Order.objects.all().filter(status=2).order_by("-order_date")
             orders_done_query_set = Order.objects.all().filter(status=3).order_by("-order_date")
-            orders_under_dispensing = self.return_paginator(orders_under_dispensing_query_set,page_param="pgdp")
-            orders_under_delivery = self.return_paginator(orders_under_delivery_query_set,page_param="pgud")
-            orders_done = self.return_paginator(orders_done_query_set,page_param="pgod")
-            context["orders_under_dispensing"] = orders_under_dispensing
-            context["orders_under_delivery"] = orders_under_delivery
-            context["orders_done"] = orders_done
         else:
-            my_orders = Order.objects.all().filter(created_by=self.request.user).order_by("-updated_at")
-            my_orders = self.return_paginator(my_orders)
-            context["my_orders"] = my_orders
+            orders_under_dispensing_query_set = Order.objects.all().filter(created_by=self.request.user,status=1).order_by("-order_date")
+            orders_under_delivery_query_set = Order.objects.all().filter(created_by=self.request.user,status=2).order_by("-order_date")
+            orders_done_query_set = Order.objects.all().filter(created_by=self.request.user,status=3).order_by("-order_date")
+        orders_under_dispensing = self.return_paginator(orders_under_dispensing_query_set,page_param="pgdp")
+        orders_under_delivery = self.return_paginator(orders_under_delivery_query_set,page_param="pgud")
+        orders_done = self.return_paginator(orders_done_query_set,page_param="pgod")
+        context["orders_under_dispensing"] = orders_under_dispensing
+        context["orders_under_delivery"] = orders_under_delivery
+        context["orders_done"] = orders_done
         return context
 
 class UserProfileView(TemplateView):
@@ -137,13 +137,12 @@ class OrderDispenseView(View):
             order = Order.objects.get(pk=kwargs["pk"])
         except Order.DoesNotExist:
             raise Http404("Object does not exist.")
-        if order.status != 1:
+        if order.status != "1":
             raise Http404("Order is not under dispensing.")
         inventory = []
         for order_item in order.order_items.all():
             if(len(order_item.inventory_data_as_list) > 0):
                 inventory.append(order_item.inventory_data_as_list)
-        print(inventory)
         return render(request,"users/order_dispense.html",{
             "order": order,
             "inventory": json.dumps(inventory,ensure_ascii=False)
