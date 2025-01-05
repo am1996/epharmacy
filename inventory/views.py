@@ -27,13 +27,14 @@ class InventoryEditView(UpdateView):
 
 class IndexInventoryView(ListView):
     model = InventoryItem
+    ordering = "-quantity"
     context_object_name = "inventory_items"
     paginate_by = 10
     template_name = "./inventory/index.html"
 
 class InventoryCreateView(View):
     def get(self,request,*args,**kwargs):
-        context = {"drugs": Drug.objects.values('id','name')}
+        context = {"drugs": Drug.objects.values('id','name').order_by('name')}
         return render(request,"./inventory/create.html",context)
     
     def post(self,request,*args,**kwargs):

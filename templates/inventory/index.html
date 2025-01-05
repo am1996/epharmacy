@@ -37,4 +37,9 @@
         </span>
     </div>
 {% endif %}
+{% if request.user.profile == 2 %}
+<a href="{% url 'inventory:create_inventory' %}" type="button" class="btn btn-success btn-floating" style="position: fixed; bottom: 10px; right: 10px;">
+    + Add Product
+</a>
+{% endif %}
 {% endblock content %}

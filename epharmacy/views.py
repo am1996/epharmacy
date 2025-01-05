@@ -6,7 +6,8 @@ import json
 from django.views.generic import ListView
 from epharmacy.mixins import AdminRequiredMixin, PharmacistRequiredMixin, ClientRequiredMixin
 
-class CartIndexView(View,ClientRequiredMixin):
+## Accessible only by client.
+class CartIndexView(ClientRequiredMixin,View):
     def get(self,request,*args,**kwargs):
         cookies = request.COOKIES.get("epharmacy_cart")
         cart_data = json.loads(cookies) if cookies != None else []
@@ -33,7 +34,8 @@ class CartIndexView(View,ClientRequiredMixin):
             response.set_cookie("epharmacy_cart",cart_data,httponly=True)
             return response
 
-class PlaceOrderView(View,ClientRequiredMixin):
+## Accessible only by client.
+class PlaceOrderView(ClientRequiredMixin,View):
     def post(self,request,*args,**kwargs):
         order_items = []
         cookies = request.COOKIES.get("epharmacy_cart")

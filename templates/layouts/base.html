@@ -23,7 +23,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "home" %}">Home</a>
                 </li>
-                
                 {% if request.user.profile.role == 1 and request.user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "inventory:index_inventory" %}">Inventory</a>
@@ -31,21 +30,24 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "products:index_drug" %}">Products</a>
                 </li> 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url "orders:index_orders" %}">Order</a>
-                </li>
-                {% else %}                        
+                {% elif request.user.profile.role == 3 and request.user.is_authenticated %}                        
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "orders:index_orders" %}">Order</a>
                 </li>
                 {% endif %}
     
             </ul>
+            <form action="/products/search/" method="get" class="form-inline my-2 my-lg-0">
+                <input name="q" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
             <ul class="navbar-nav">
-                {% if request.user.is_authenticated %}
+                {% if request.user.profile.role == 3 and request.user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="/cart">Cart</a>
                 </li>
+                {% endif %}
+                {% if request.user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "user:dashboard" %}">Dashboard</a>
                 </li>

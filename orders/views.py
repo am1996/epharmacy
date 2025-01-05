@@ -7,9 +7,12 @@ from products.models import Drug
 from django.shortcuts import get_object_or_404
 import json
 import uuid
+from epharmacy.mixins import ClientRequiredMixin
 # Create your views here.
 
-class DetailOrderView(View):
+## Accessible only by client.
+
+class DetailOrderView(ClientRequiredMixin,View):
     def get(self,request,pk):
         item = InventoryItem.objects.values("drug_id","drug_id__img","drug_id__name","drug_id__company","drug_id__data").annotate(total_quantity=Sum("quantity"),max=Max("public_price")).filter(drug_id=pk)
         item = item[0] if item else {}
@@ -40,7 +43,7 @@ class DetailOrderView(View):
         response.set_cookie("epharmacy_cart",j,httponly= True)
         return response
 
-class IndexOrdersView(ListView):
+class IndexOrdersView(ClientRequiredMixin,ListView):
     model = InventoryItem
     template_name = "./orders/index.html"
     context_object_name = "inventory"
@@ -57,7 +60,7 @@ class IndexOrdersView(ListView):
             'most_ordered': most_ordered
         }
     
-class OrderedOrderDetailsView(DetailView):
+class OrderedOrderDetailsView(ClientRequiredMixin,DetailView):
     model = Order
     pk_url_kwarg = "pk"
     template_name = "users/order_details.html"

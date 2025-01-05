@@ -9,4 +9,5 @@ urlpatterns = [
     path("<int:pk>/delete",DeleteDrugView.as_view(),name="delete_drug"),
     path("<int:pk>/update",UpdateDrugView.as_view(),name="update_drug"),
     path("create/",CreateDrugView.as_view(),name="create_drug"),
+    path("search/",SearchView.as_view(),name="search_drug"),
 ]

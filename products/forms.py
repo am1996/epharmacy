@@ -9,4 +9,4 @@ class ProductForm(ModelForm):
 
     class Meta:
         model = Drug
-        fields = ('name', 'active_ingrendients', 'price','company','group','data','route')
+        fields = ('name', 'active_ingrendients', 'img','price','company','group','data','route')

@@ -42,7 +42,7 @@ class RegisterationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password')
+        fields = ['username', 'first_name', 'last_name', 'email']
 
 class InventoryItemDispensedForm(forms.ModelForm):
     class Meta:

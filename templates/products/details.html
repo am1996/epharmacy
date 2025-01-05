@@ -30,6 +30,7 @@
         <th>Route:</th>
         <td>{{ drug.route }}</td>
     </tr>
+    {% if request.user.profile.role == 2 %}
     <tr>
         <th></th>
         <td>
@@ -37,5 +38,6 @@
             <a href={% url "products:delete_drug" drug.pk %} class="btn btn-danger text-white">Delete</a>
         </td>
     </tr>
+    {% endif %}
 </table>
 {% endblock content %}
