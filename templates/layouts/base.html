@@ -13,7 +13,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             E-Pharmacy
             {% if request.user.profile.role == 1 %}
             <b style="font-size: 0.7rem; color: #999;">[Admin]</b>
@@ -38,15 +38,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "inventory:index_inventory" %}">Inventory</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "donations:donations_list" %}">Donations</a>
+                </li>
                 {% elif request.user.profile.role == 3 and request.user.is_authenticated %}                        
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "orders:index_orders" %}">Order</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "donations:donations_list" %}">Donations</a>
                 </li>
                 {% endif %}
     
             </ul>
             <form action="/products/search/" method="get" class="form-inline my-2 my-lg-0">
-                <input name="q" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <input name="q" class="form-control mr-sm-2" type="search" placeholder="Search for Product" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
             <ul class="navbar-nav">

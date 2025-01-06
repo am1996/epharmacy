@@ -2,7 +2,7 @@
 {% block content %}
 <h2>Edit Your Profile</h2>
 <div class="col-md-6 ms-3">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <h3>Update User Details</h3>
     {{ user_form.as_p }}

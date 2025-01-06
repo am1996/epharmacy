@@ -38,6 +38,14 @@
             <a href={% url "products:delete_drug" drug.pk %} class="btn btn-danger text-white">Delete</a>
         </td>
     </tr>
+    
+    {% elif request.user.profile.role == 3 %}
+    <tr>
+        <th></th>
+        <td>
+            <a href="{% url 'orders:details_orders' drug.id %}" class="btn btn-success btn-sm">Order Now</a>
+        </td>
+    </tr>
     {% endif %}
 </table>
 {% endblock content %}

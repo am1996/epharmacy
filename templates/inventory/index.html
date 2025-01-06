@@ -11,14 +11,20 @@
         <th>Quantity</th>
         <th>Expiry Date</th>
     </tr>
-  {% for item in inventory_items %}
+    {% if inventory_items %}
+    {% for item in inventory_items %}
     <tr>
         <td>{{ item.id }}</td>
         <td><a href="{% url "inventory:details_inventory" item.id %}">{{ item.drug_id }}</a></td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.expiry_date }}</td>
+        <td>{{ item.product_name }}</td>
+        <td>{{ item.status }}</td>
     </tr>
-  {% endfor %}
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4">No items found</td>
+    </tr>
+    {% endif %}
 </table>
 {% if is_paginated %}
     <div class="pagination">

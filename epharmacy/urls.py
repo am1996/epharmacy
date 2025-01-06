@@ -10,6 +10,7 @@ urlpatterns = [
     path('inventory/',include("inventory.urls",namespace="inventory")),
     path('orders/',include("orders.urls",namespace="orders")),
     path('user/',include("users.urls",namespace="user")),
+    path('donations/',include("donations.urls",namespace="donations")),
     path('cart/',CartIndexView.as_view()),
     path('cart/placeorder',PlaceOrderView.as_view()),
     path('', DrugListView.as_view(),name="home"),
