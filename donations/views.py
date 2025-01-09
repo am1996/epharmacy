@@ -1,26 +1,80 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.generic import ListView,DetailView,DeleteView,UpdateView,CreateView
 from django.views import View
-from products.models import Drug
+from django.core.paginator import Paginator
 from epharmacy.utils import parse_querydict
 from .forms import *
 from .models import Donation,DonationRequest
 from django.urls import reverse_lazy
-from .forms import DonationForm
+from .forms import DonationForm,DonationRequestForm
 from django.contrib import messages
 from epharmacy.mixins import PharmacistRequiredMixin,ClientRequiredMixin
 # Create your views here.
 
-class DonationsListView(ListView):
+class DonationsAvailableListView(ListView):
     model = Donation
     template_name = 'donations/donations_list.html'
     context_object_name = 'donations'
     paginate_by = 10
     order_by = '-created_at'
-
     def get_queryset(self):
         return Donation.objects.filter(status=2)
-    
+
+class DonationsRequestedListView(PharmacistRequiredMixin,View):
+    def get_paginator(self, request, status, page_number, page_name):
+        item = DonationRequest.objects.filter(status=status).order_by('-created_at')
+        item = Paginator(item,page_number)
+        item_page_number = request.GET.get(page_name)
+        item = item.get_page(item_page_number)
+        return item
+
+    def get(self, request, *args, **kwargs):
+        #sent requests
+        don_req_rejected = self.get_paginator(request,0,10,'drr')
+
+        #pending requests
+        don_req_pending = self.get_paginator(request,1,10,'drp')
+
+        #approved requests
+        don_req_approved = self.get_paginator(request,2,10,'dra')
+
+        #sent requests
+        don_req_sent = self.get_paginator(request,3,10,'drs')
+        return render(request, 'donations/donations_request_list.html', {
+                'don_req_pending':don_req_pending,
+                'don_req_approved':don_req_approved,
+                'don_req_rejected':don_req_rejected,
+                'don_req_sent':don_req_sent
+            })
+
+class DonationRequestDetailView(DetailView):
+    model = DonationRequest
+    template_name = 'donations/donations_request_detail.html'
+    context_object_name = 'donation_request'
+
+    def post(self, request, *args, **kwargs):
+        id = kwargs.get('pk','')
+        status = request.POST.get('status')
+        donation_request = get_object_or_404(DonationRequest,pk=id)
+        if status == '2':
+            donation_request.status = 2
+            donation_request.save()
+            messages.success(self.request, 'Donation Request Approved Successfully')
+        elif status == '0':
+            donation_request.status = 0
+            donation_request.save()
+            messages.success(self.request, 'Donation Request Rejected Successfully')
+        elif status == '3':
+            donation_request.status = 3
+            # TODO: update donation quantity
+            donation_request.donation.quantity -= donation_request
+            donation_request.donation.save()
+            donation_request.save()
+            messages.success(self.request, 'Donation Request Sent Successfully')
+        else:
+            messages.success(self.request, 'Wrong Status')
+        return redirect("donations:donations_request_list")
+
 class DonationsCreateView(CreateView):
     model = Donation
     template_name = 'donations/donations_create.html'
@@ -52,6 +106,13 @@ class DonationsApproveView(PharmacistRequiredMixin,View):
         return redirect('donations:donations_list')
 
 class DonationsRequestView(ClientRequiredMixin,View):
+    def get(self, request, *args, **kwargs):
+        donation = get_object_or_404(Donation,pk=self.kwargs['pk'])
+        if donation.status != '2':
+            messages.error(self.request, 'Donation is not available for request')
+            return redirect('donations:donations_list')
+        donation_form = DonationRequestForm(donation=donation)
+        return render(request, 'donations/donations_request.html', {'donation_form':donation_form})
     def post(self, request, *args, **kwargs):
         donation = get_object_or_404(Donation,pk=self.kwargs['pk'])
         donation_request = DonationRequest.objects.create(

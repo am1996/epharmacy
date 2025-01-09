@@ -48,14 +48,27 @@ class Donation(models.Model):
         return self.product_name
 
 class DonationRequest(models.Model):
-
     donation = models.ForeignKey(Donation, on_delete=models.CASCADE)
-    attachment = models.ImageField(upload_to=upload_to_requested,null=True,blank=True)
+    attachment = models.FileField(upload_to=upload_to_requested,null=True,blank=True)
     quantity = models.IntegerField(default=1)
+    comment = models.TextField(null=True,blank=True)
     status = models.IntegerField(choices=[
         (0,"Rejected"),
         (1,"Pending"),
         (2,"Approved"),
-        (3,"Donation Sent")
+        (3,"Sent")
     ],default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     requested_by = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    @property
+    def get_status(self):
+        if self.status == 0:
+            return "Rejected"
+        elif self.status == 1:
+            return "Pending"
+        elif self.status == 2:
+            return "Approved"
+        elif self.status == 3:
+            return "Sent"

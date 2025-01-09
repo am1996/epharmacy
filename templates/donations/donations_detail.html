@@ -38,10 +38,7 @@
         <tr>
             <th></th>
             <td>
-                <form action="{% url 'donations:donations_approve' donation.id %}" method="post">
-                    {% csrf_token %}
-                    <button onclick="return confirm('Do you want to approve this donation?')" type="submit" class="btn btn-success btn-sm">Request Donation</a>
-                </form>
+                <a href='{% url "donations:donations_request" donation.id %}' class="btn btn-success btn-sm">Request Donation</a>
             </td>
         </tr>
         {% endif %}

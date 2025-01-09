@@ -38,8 +38,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url "inventory:index_inventory" %}">Inventory</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url "donations:donations_list" %}">Donations</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Donations
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url "donations:donations_list" %}">Donations Available</a>
+                        <a class="dropdown-item" href="{% url "donations:donations_request_list" %}">Donations Requested</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
                 </li>
                 {% elif request.user.profile.role == 3 and request.user.is_authenticated %}                        
                 <li class="nav-item">
