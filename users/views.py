@@ -15,6 +15,7 @@ from django.contrib import messages
 from django.db import transaction
 from epharmacy.utils import parse_querydict
 from epharmacy.mixins import PharmacistRequiredMixin
+from donations.models import DonationRequest
 class UserLogoutView(View):
     def get(self, request, *args, **kwargs):
         logout(request)
@@ -36,6 +37,7 @@ class UserDashboardView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        donations = DonationRequest.objects.filter(requested_by=self.request.user).order_by("-created_at")
         if self.request.user.profile.role == 2 or self.request.user.profile.role == 1:
             orders_under_dispensing_query_set = Order.objects.all().filter(status=1).order_by("-order_date")
             orders_under_delivery_query_set = Order.objects.all().filter(status=2).order_by("-order_date")
@@ -49,6 +51,7 @@ class UserDashboardView(ListView):
         orders_done = self.return_paginator(orders_done_query_set,page_param="pgod")
         context["orders_under_dispensing"] = orders_under_dispensing
         context["orders_under_delivery"] = orders_under_delivery
+        context["donations"] = donations
         context["orders_done"] = orders_done
         return context
 

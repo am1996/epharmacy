@@ -172,4 +172,30 @@
     </ul>
 {% endif %}
 {# End Orders Delivered ##}
+{# Donations Start #}
+<h2>Donations Requested By You:</h2>
+<table class="table">
+    <tr>
+        <td>Drug Name</td>
+        <td>Quantity</td>
+        <td>Status</td>
+        <td>Requested At</td>
+    </tr>
+{% if not donations %}
+<tr>
+    <td>No donations delivered available</td>
+</tr>
+{% else %}
+
+{% for donation in donations %}
+    <tr>
+        <td>{{ donation.donation.product_name }}</td>
+        <td>{{ donation.quantity }}</td>
+        <td>{{ donation.get_status }}</td>
+        <td>{{ donation.created_at }}</td>
+    </tr>
+{% endfor %}
+{% endif %}
+</table>
+{# Donations End #}
 {% endblock content %}

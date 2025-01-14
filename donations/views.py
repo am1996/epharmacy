@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from .forms import DonationForm,DonationRequestForm
 from django.contrib import messages
 from epharmacy.mixins import PharmacistRequiredMixin,ClientRequiredMixin
+from django.db import transaction
 # Create your views here.
 
 class DonationsAvailableListView(ListView):
@@ -19,6 +20,15 @@ class DonationsAvailableListView(ListView):
     order_by = '-created_at'
     def get_queryset(self):
         return Donation.objects.filter(status=2)
+
+class DonatinosPendingApprovalList(PharmacistRequiredMixin,ListView):
+    model = Donation
+    template_name = 'donations/donations_pending_approval_list.html'
+    context_object_name = 'donations'
+    paginate_by = 10
+    order_by = '-created_at'
+    def get_queryset(self):
+        return Donation.objects.filter(status=1)
 
 class DonationsRequestedListView(PharmacistRequiredMixin,View):
     def get_paginator(self, request, status, page_number, page_name):
@@ -40,6 +50,7 @@ class DonationsRequestedListView(PharmacistRequiredMixin,View):
 
         #sent requests
         don_req_sent = self.get_paginator(request,3,10,'drs')
+        print(don_req_sent.object_list)
         return render(request, 'donations/donations_request_list.html', {
                 'don_req_pending':don_req_pending,
                 'don_req_approved':don_req_approved,
@@ -47,10 +58,19 @@ class DonationsRequestedListView(PharmacistRequiredMixin,View):
                 'don_req_sent':don_req_sent
             })
 
-class DonationRequestDetailView(DetailView):
+class DonationRequestDetailView(PharmacistRequiredMixin,DetailView):
     model = DonationRequest
     template_name = 'donations/donations_request_detail.html'
     context_object_name = 'donation_request'
+
+    @transaction.atomic
+    def dispense_from_donation(self,donation_request):
+        if donation_request.quantity > donation_request.donation.quantity:
+            raise ValueError("Not enough donation inventory to dispense this quantity.")
+        donation_request.donation.quantity -= donation_request.quantity
+        donation_request.donation.save()
+        donation_request.save()
+        
 
     def post(self, request, *args, **kwargs):
         id = kwargs.get('pk','')
@@ -58,24 +78,21 @@ class DonationRequestDetailView(DetailView):
         donation_request = get_object_or_404(DonationRequest,pk=id)
         if status == '2':
             donation_request.status = 2
-            donation_request.save()
+            self.dispense_from_donation(donation_request)
             messages.success(self.request, 'Donation Request Approved Successfully')
-        elif status == '0':
+        elif status == '0' and donation_request.status == 1:
             donation_request.status = 0
             donation_request.save()
-            messages.success(self.request, 'Donation Request Rejected Successfully')
-        elif status == '3':
+            messages.warning(self.request, 'Donation Request Rejected Successfully.')
+        elif status == '3' and donation_request.status == 2:
             donation_request.status = 3
-            # TODO: update donation quantity
-            donation_request.donation.quantity -= donation_request
-            donation_request.donation.save()
             donation_request.save()
             messages.success(self.request, 'Donation Request Sent Successfully')
         else:
             messages.success(self.request, 'Wrong Status')
         return redirect("donations:donations_request_list")
 
-class DonationsCreateView(CreateView):
+class DonationsCreateView(ClientRequiredMixin,CreateView):
     model = Donation
     template_name = 'donations/donations_create.html'
     form_class = DonationForm

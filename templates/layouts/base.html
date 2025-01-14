@@ -44,8 +44,8 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{% url "donations:donations_list" %}">Donations Available</a>
-                        <a class="dropdown-item" href="{% url "donations:donations_request_list" %}">Donations Requested</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a class="dropdown-item" href="{% url "donations:donations_request_list" %}">Donations Requests</a>
+                        <a class="dropdown-item" href="{% url "donations:donations_pending_approval_list" %}">Donations Pending Approval</a>
                     </div>
                 </li>
                 {% elif request.user.profile.role == 3 and request.user.is_authenticated %}                        

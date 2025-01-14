@@ -1,0 +1,48 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>Donations Pending Approval</h1>
+<table class="table">
+    <tr>
+        <th>id.</th>
+        <th>Product Name.</th>
+        <th>Quantity</th>
+        <th>Created At</th>
+    </tr>
+    {% if donations %}
+    {% for item in donations %}
+    <tr>
+        <td>{{ item.id }}</td>
+        <td><a href="{% url "donations:donations_detail" item.id %}">{{ item.product_name }}</a></td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.created_at }}</td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4">No donations found</td>
+    </tr>
+    {% endif %}
+</table>
+{% if is_paginated %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+            {% endif %}
+        </span>
+    </div>
+{% endif %}
+{% if request.user.profile.role == 3 %}
+<a href="{% url 'donations:donations_create' %}" type="button" class="btn btn-success btn-floating" style="position: fixed; bottom: 10px; right: 10px;">
+    + Donate Product
+</a>
+{% endif %}
+{% endblock content %}
