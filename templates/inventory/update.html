@@ -1,0 +1,10 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h2>Edit Drug Details</h2>
+<form method="POST" class="form" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+    <input class="btn btn-block btn-success" type="submit" value="Edit Product" />
+</form>
+{% endblock content %}

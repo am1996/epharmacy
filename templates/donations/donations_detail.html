@@ -1,0 +1,52 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>Donation Details</h1>
+<div class="row">
+    <table class="table col-md-8 col-xs-12 offset-md-2">
+        <tr>
+            <td style="text-align:center" colspan=2><img src="/media/{{ donation.image }}" alt="responsive image" class="img-fluid rounded"/></td>
+        </tr>
+        <tr>
+            <th>Name:</th>
+            <td>{{ donation.product_name }}</td>
+        </tr>
+        <tr>
+            <th>Quantity:</th>
+            <td>{{ donation.quantity }}</td>
+        </tr>
+        <tr>
+            <th>Status:</th>
+            <td>{{ donation.get_status }}</td>
+        </tr>
+        {% if request.user.profile.role == 2 %}
+        <tr>
+            <th>Donated By:</th>
+            <td>{{ donation.donated_by }}</td>
+        </tr>
+        {% endif %}
+        {% if request.user.profile.role == 2 and donation.status == "1" %}
+        <tr>
+            <td>
+                <form action="{% url 'donations:donations_approve' donation.id %}" method="post">
+                    {% csrf_token %}
+                    <button onclick="return confirm('Do you want to approve this donation?')" type="submit" class="btn btn-success btn-sm">Approve Donation</a>
+                </form>
+            </td>
+            <td>
+                <form action="{% url 'donations:donations_reject' donation.id %}" method="post">
+                    {% csrf_token %}
+                    <button onclick="return confirm('Do you want to reject this donation?')" type="submit" class="btn btn-danger btn-sm">Reject Donation</a>
+                </form>
+            </td>
+        </tr>
+        {% elif request.user.profile.role == 3 and donation.status == "2" %}
+        <tr>
+            <th></th>
+            <td>
+                <a href='{% url "donations:donations_request" donation.id %}' class="btn btn-success btn-sm">Request Donation</a>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+{% endblock content %}

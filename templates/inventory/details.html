@@ -1,0 +1,49 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>Inventory Item Details</h1>
+<table class="table">
+    <tr>
+        <th>Name:</th>
+        <td>{{ inventory_item.drug_id }}</td>
+    </tr>
+    <tr>
+        <th>Batch No:</th>
+        <td>{{ inventory_item.batch_no }}</td>
+    </tr>
+    <tr>
+        <th>Pharmacist Price:</th>
+        <td>{{ inventory_item.pharmacist_price }}</td>
+    </tr>
+    <tr>
+        <th>Quantity:</th>
+        <td>{{ inventory_item.quantity }}</td>
+    </tr>
+    <tr>
+        <th>Public Price:</th>
+        <td>{{ inventory_item.public_price }}</td>
+    </tr>
+    <tr>
+        <th>Batch No:</th>
+        <td>{{ inventory_item.batch_no }}</td>
+    </tr>
+    <tr>
+        <th>Manufacturing Date:</th>
+        <td>{{ inventory_item.manufacturing_date }}</td>
+    </tr>
+    <tr>
+        <th>Expiry Date:</th>
+        <td>{{ inventory_item.expiry_date }}</td>
+    </tr>
+    <tr>
+        <th>Created By:</th>
+        <td>{{ inventory_item.created_by }}</td>
+    </tr>
+    <tr>
+        <th></th>
+        <td>
+            <a href={% url "inventory:update_inventory" inventory_item.pk %} class="btn btn-success text-white">Edit</a>
+            <a href={% url "inventory:delete_inventory" inventory_item.pk %} class="btn btn-danger text-white">Delete</a>
+        </td>
+    </tr>
+</table>
+{% endblock content %}

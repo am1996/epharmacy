@@ -1,0 +1,10 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<form method="POST" class="jumbotron mt-4">
+    <h1 class="text-center pb-4">Register</h1>
+    {% csrf_token %}
+
+    {{ form.as_p }}
+    <input type="submit" value="Register" class="btn btn-success btn-lg btn-block" />
+</form>
+{% endblock content %}

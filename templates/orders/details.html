@@ -1,0 +1,50 @@
+{% extends "../layouts/base.html" %}
+{% load static %}
+{% load static %}
+{% block header %}
+<script src="{% static 'js/alpine.min.js' %}" defer></script>
+{% endblock header %}
+{% block content %}
+<h2 class="my-4"><b>{{ drug.drug_id__name }}</b></h2>
+<div class="d-flex row" x-data="{quantity: {{drug.total_quantity}} }">
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <img class="img-fluid" src="/media/{{ drug.drug_id__img }}" alt="drug Image"/>
+    </div>
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <table class="table">
+            <tr>
+                <td>Price: </td>
+                <td>{{ drug.max }} L.E</td>
+            </tr>
+            <tr>
+                <td>Avialable Quantity: </td>
+                <td x-text="quantity"></td>
+            </tr>
+            <tr>
+                <td>Indications: </td>
+                <td>{{ drug.drug_id__data }}</td>
+            </tr>
+            <tr>
+                <td>Company: </td>
+                <td>{{ drug.drug_id__company }}</td>
+            </tr>
+            <tr>
+                <td>Order: </td>
+                <td>
+                    <form method="POST" class="input-group mb-3">
+                        {% csrf_token %}
+                        <input name="quantity" min="1" placeholder="1" x-bind:max="quantity" type="number" class="form-control" required/>
+                        <input type="number" name="drug_id" value="{{drug.drug_id}}" hidden/>
+                        <input type="text" name="img" value="{{drug.drug_id__img}}" hidden/>
+                        <input type="text" name="price" value="{{drug.max}}" hidden/>
+                        <input type="text" name="name" value="{{drug.drug_id__name}}" hidden/>
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="submit">Order</button>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock content %}

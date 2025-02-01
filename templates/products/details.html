@@ -1,0 +1,51 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>Drug Details</h1>
+<table class="table">
+    <tr>
+        <th>Name:</th>
+        <td>{{ drug.name }}</td>
+    </tr>
+    <tr>
+        <th>Active Pharmaceutical Ingredients:</th>
+        <td>{{ drug.active_ingrendients }}</td>
+    </tr>
+    <tr>
+        <th>Price:</th>
+        <td>{{ drug.price }} L.E</td>
+    </tr>
+    <tr>
+        <th>Company:</th>
+        <td>{{ drug.company }}</td>
+    </tr>
+    <tr>
+        <th>Group:</th>
+        <td>{{ drug.group }}</td>
+    </tr>
+    <tr>
+        <th>Data:</th>
+        <td>{{ drug.data }}</td>
+    </tr>
+    <tr>
+        <th>Route:</th>
+        <td>{{ drug.route }}</td>
+    </tr>
+    {% if request.user.profile.role == 2 %}
+    <tr>
+        <th></th>
+        <td>
+            <a href={% url "products:update_drug" drug.pk %} class="btn btn-success text-white">Edit</a>
+            <a href={% url "products:delete_drug" drug.pk %} class="btn btn-danger text-white">Delete</a>
+        </td>
+    </tr>
+    
+    {% elif request.user.profile.role == 3 %}
+    <tr>
+        <th></th>
+        <td>
+            <a href="{% url 'orders:details_orders' drug.id %}" class="btn btn-success btn-sm">Order Now</a>
+        </td>
+    </tr>
+    {% endif %}
+</table>
+{% endblock content %}

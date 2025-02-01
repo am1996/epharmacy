@@ -1,0 +1,203 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+{% for message in messages %}
+    <p class="alert alert-success">{{ message }}</p>
+{% endfor %}
+<h2>Dashboard</h2>
+<div class="d-flex flex-wrap">
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <img class="img-fluid" src="/media/{{ request.user.profile.photo }}" alt="profile Image"/>
+    </div>
+    <div class="col-md-8 col-sm-6 col-sx-12">
+        <p>
+            <b>Fullname:</b> {{ request.user.firstname }} {{ request.user.lastname }}
+        </p>
+        <p>
+            <b>Username:</b> {{ request.user.username }}
+        </p>
+        <p>
+            <b>Email:</b> {{ request.user.email }}
+        </p>
+        <p>
+            <b>Address:</b> 
+            {{ request.user.profile.address }}
+        </p>
+        <p>
+            <b>Phone Number:</b> 
+            {{ request.user.profile.phone_number }}
+        </p>
+        <p>
+            <b>Gender:</b> 
+            {% if request.user.profile.gender == 1 %} Male 
+            {% elif request.user.profile.role == 2 %} Female
+            {% endif %}
+        </p>
+        <p>
+            <b>Role:</b> 
+            {% if request.user.profile.role == 1 %} Admin 
+            {% elif request.user.profile.role == 2 %} Pharmacist
+            {% else %} Client
+            {% endif %}
+        </p>
+        <p>
+            <a href="{% url "user:profile_edit" %}" class="btn btn-success">Edit Profile</a>
+            <a href="{% url "user:changepassword" %}" class="btn btn-warning">Change Password</a>
+        </p>
+    </div>
+</div>
+
+{# Orders Under Dispensing ##}
+<h2>Orders Under Dispensing</h2>
+<table class="table">
+    <tr>
+        <td>Order No</td>
+        <td>Status</td>
+        <td>Dispensed By</td>
+    </tr>
+{% if not orders_under_dispensing %}
+<tr>
+    <td>No orders under dispensing available</td>
+</tr>
+{% else %}
+
+{% for order in orders_under_dispensing %}
+    <tr>
+        <td><a href="{% url "user:order_details" order.id %}">{{ order.id }}</a></td>
+        <td>
+            {% if order.status == "1" %}
+            Pending
+            {% elif order.status == "2" %}
+            Under Delivery
+            {% elif order.status == "3" %}
+            Done
+            {% endif %}</td>
+        <td>{{ order.dispensed_by }}</td>
+    </tr>
+{% endfor %}
+{% endif %}
+</table>
+{% if orders_under_dispensing.has_other_pages %}
+    <ul class="pagination">
+        {% if orders_under_dispensing.has_previous %}
+            <li><a class="btn" href="?pgdp={{ orders_under_dispensing.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        <li class="active btn"><span>{{ orders_under_dispensing.number }}</span></li>
+        {% if orders_under_dispensing.has_next %}
+            <li><a class="btn" href="?pgdp={{ orders_under_dispensing.next_page_number }}">Next</a></li>
+        {% endif %}
+    </ul>
+{% endif %}
+{# End Orders Under Dispensing ##}
+{# Orders Under Delivery ##}
+<h2>Orders Under Delivery</h2>
+<table class="table">
+    <tr>
+        <td>Order No</td>
+        <td>Status</td>
+        <td>Dispensed By</td>
+    </tr>
+{% if not orders_under_delivery %}
+<tr>
+    <td>No orders under delivery available</td>
+</tr>
+{% else %}
+
+{% for order in orders_under_delivery %}
+    <tr>
+        <td><a href="{% url "user:order_details" order.id %}">{{ order.id }}</a></td>
+        <td>
+            {% if order.status == "1" %}
+            Pending
+            {% elif order.status == "2" %}
+            Under Delivery
+            {% elif order.status == "3" %}
+            Done
+            {% endif %}</td>
+        <td>{{ order.dispensed_by }}</td>
+    </tr>
+{% endfor %}
+{% endif %}
+</table>
+{% if orders_under_delivery.has_other_pages %}
+    <ul class="pagination">
+        {% if orders_under_delivery.has_previous %}
+            <li><a class="btn" href="?pgud={{ orders_under_delivery.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        <li class="active btn"><span>{{ orders_under_delivery.number }}</span></li>
+        {% if orders_under_delivery.has_next %}
+            <li><a class="btn" href="?pgud={{ orders_under_delivery.next_page_number }}">Next</a></li>
+        {% endif %}
+    </ul>
+{% endif %}
+{# End Orders Under Delivery ##}
+{# Orders Delivered ##}
+<h2>Orders Delivered</h2>
+<table class="table">
+    <tr>
+        <td>Order No</td>
+        <td>Status</td>
+        <td>Dispensed By</td>
+    </tr>
+{% if not orders_done %}
+<tr>
+    <td>No orders delivered available</td>
+</tr>
+{% else %}
+
+{% for order in orders_done %}
+    <tr>
+        <td><a href="{% url "user:order_details" order.id %}">{{ order.id }}</a></td>
+        <td>
+            {% if order.status == "1" %}
+            Pending
+            {% elif order.status == "2" %}
+            Under Delivery
+            {% elif order.status == "3" %}
+            Done
+            {% endif %}</td>
+        <td>{{ order.dispensed_by }}</td>
+    </tr>
+{% endfor %}
+{% endif %}
+</table>
+{% if orders_done.has_other_pages %}
+    <ul class="pagination">
+        {% if orders_done.has_previous %}
+            <li><a class="btn" href="?pgod={{ orders_done.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        <li class="active btn"><span>{{ orders_done.number }}</span></li>
+        {% if orders_done.has_next %}
+            <li><a class="btn" href="?pgod={{ orders_done.next_page_number }}">Next</a></li>
+        {% endif %}
+    </ul>
+{% endif %}
+{# End Orders Delivered ##}
+{# Donations Start #}
+{% if request.user.profile.role == 3 and request.user.is_authenticated %}
+<h2>Donations Requested By You:</h2>
+<table class="table">
+    <tr>
+        <td>Drug Name</td>
+        <td>Quantity</td>
+        <td>Status</td>
+        <td>Requested At</td>
+    </tr>
+{% if not donations %}
+<tr>
+    <td>No donations delivered available</td>
+</tr>
+{% else %}
+
+{% for donation in donations %}
+    <tr>
+        <td>{{ donation.donation.product_name }}</td>
+        <td>{{ donation.quantity }}</td>
+        <td>{{ donation.get_status }}</td>
+        <td>{{ donation.created_at }}</td>
+    </tr>
+{% endfor %}
+{% endif %}
+{% endif %}
+</table>
+{# Donations End #}
+{% endblock content %}

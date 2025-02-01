@@ -1,0 +1,30 @@
+[x-cloak] {
+    display: none !important;
+}
+
+.modal-fullscreen{
+    width: 100vw;
+    height: 100vh;
+    margin: 0px;
+    max-width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: rgba(0, 0, 0, 0.3);
+}
+.fade-enter {
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-leave-active {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}

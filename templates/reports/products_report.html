@@ -1,0 +1,58 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+{% include "../layouts/includes/export.html" %}
+<h2 id="head">{{heading}}</h2>
+<table class="table table-striped" id="table-to-export">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if heading == "Products With The Highest Stock" %}
+        {% for item in result %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.drug_id.name }}</td>
+            <td>{{ item.quantity }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        {% for item in result %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.drug.name }}</td>
+            <td>{{ item.quantity }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+<button id="export-pdf" class="btn btn-warning">Export to PDF 📄</button>
+<button id="export-excel" class="btn btn-success">Export to Excel 📊</button>
+<script>
+    document.getElementById('export-pdf').addEventListener('click', function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Get the table HTML
+        const table = document.getElementById('table-to-export');
+        // Use jsPDF's autoTable plugin to convert the table into a PDF
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);  // H1 size
+        // Use jsPDF's autoTable plugin to convert the table into a PDF
+        doc.text(head.innerText, 10, 10);
+        doc.autoTable({ html: '#table-to-export' });
+
+        // Save the PDF
+        doc.save('table.pdf');
+    });
+    document.getElementById('export-excel').addEventListener('click', function() {
+        const table = document.getElementById('table-to-export');
+        const wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
+        XLSX.writeFile(wb, 'table.xlsx');
+    });
+</script>
+{% endblock content %}

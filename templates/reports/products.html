@@ -1,0 +1,34 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>Products Report Search</h1>
+
+<div class="jumbotron">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="search_type" class="form-label">Search Type:</label>
+            <select name="search_type" class="form-control">
+                <option value="tps">Top Products Ordered</option>
+                <option value="lps">Lowest Products Ordered</option>
+                <option value="tpis">Products with the Heighest Stock</option>
+                <option value="lpis">Products with the Lowest Stock</option>
+            </select>
+        </div>
+        <div>
+            <label for="limit" class="form-label">Search Limit:</label>
+            <input min="1" type="number" placeholder="Limit" name="limit" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label for="startDate" class="form-label">From Date:</label>
+            <input type="date" id="startDate" name="startDate" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="endDate" class="form-label">To Date:</label>
+            <input type="date" id="endDate" name="endDate" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Search</button>
+    </form>
+</div>
+{% endblock content %}

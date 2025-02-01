@@ -1,0 +1,33 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>Donations Report Search</h1>
+<div class="jumbotron">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="search_type" class="form-label">Search Type:</label>
+            <select name="search_type" class="form-control">
+                <option value="tds">Top Donations</option>
+                <option value="lds">Lowest Donations</option>
+                <option value="tdrs">Top Donations Requested</option>
+                <option value="ldrs">Lowest Donations Requested</option>
+            </select>
+        </div>
+        <div>
+            <label for="limit" class="form-label">Search Limit:</label>
+            <input min="1" type="number" placeholder="Limit" name="limit" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label for="startDate" class="form-label">From Date:</label>
+            <input type="date" id="startDate" name="startDate" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="endDate" class="form-label">To Date:</label>
+            <input type="date" id="endDate" name="endDate" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Search</button>
+    </form>
+</div>
+{% endblock content %}

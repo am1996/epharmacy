@@ -1,0 +1,134 @@
+{% extends "../layouts/base.html" %}
+{% load queryset_to_json %} 
+{% load static %}
+{% block header %}
+<script src="{% static 'js/alpine.min.js' %}" defer></script>
+{% endblock header %}
+{% load static %}
+{% block content %}
+<h1>Order no {{ order }} Details</h1>
+{{errors}}
+{% if request.user.profile.role == 1 or request.user.profile.role == 2 %}
+<table class="table">
+    <tr>
+        <td><b>Order Number:</b> {{ order.id }}</td>
+        <td><b>Order Date:</b> {{ order.order_date }}</td>
+        <td><b>Status:</b>
+            {% if order.status == "1" %}Pending
+            {% elif order.status == "2" %}Under Delivery
+            {% else %}Done
+            {% endif %}
+        </td>
+        {% if order.dispensed_by %}
+        <td><b>Dispensed By:</b>{{ order.dispensed_by.username }}
+        {% endif %}
+    </tr>
+    <tr>
+        <td><b>Customer Username:</b> {{ order.created_by.username }}</td>
+        <td><b>Customer Fullname:</b> {{ order.created_by.fullname }}</td>
+        <td><b>Customer Address:</b> {{ order.created_by.profile.address }}</td>
+    </tr>
+    <tr>
+        <td><b>Customer Phone Number:</b> {{ order.created_by.profile.phone_number }}</td>
+        <td><b>Customer Email:</b> {{ order.created_by.email }}</td>
+        <td></td>
+    </tr>
+</table>
+{% endif %} 
+<table  class="table">
+    <thead>
+        <th>Drug Name</th>
+        <th>Quantity</th>
+        <th></th>
+    </thead>
+    <tbody>
+        {% for item in order.order_items.all %}
+        <tr>
+            <td>{{item.drug.name}}</td>
+            <td>{{item.quantity}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<h1>To Be Dispensed</h1>
+<div x-data="tableForm">
+    <form method="POST">
+        {% csrf_token %}
+        <div>
+            <label><b>Order Comment</b></label>
+            <textarea name="comment" class="form-control"></textarea>
+        </div>
+        <table class="table">
+            <thead>
+                <th>Drug</th>
+                <th>(Expiry Date | Quantity)</th>
+                <th>Quantity Dispensed</th>
+                <th></th>
+            </thead>
+            <tbody>
+                <template x-for="(item,itemIdx) in items">
+                    <tr>
+                        <td>
+                            <select x-model="item.drug" :name="itemIdx + '__drug_id'" @change="updateItem(itemIdx)" x-ref="drugChoice" class="form-control">
+                                <template x-for="(d, drugIdx) in inventory">
+                                    <option :value="d[0].drug_id" x-text="d[0].drug_name"></option>
+                                </template>
+                            </select>
+                            <input :name="itemIdx +'__order'" value="{{ order.pk }}" type="text" hidden>
+                        </td>
+                        <td>
+                            <select :name="itemIdx +'__inventory_item'" @change="updateInventoryChosen(itemIdx)" x-ref="invChoice" class="form-control">
+                                <template x-for="(d,invIdx) in inventory[items[itemIdx].idx]">
+                                    <option x-bind:value="d.id" x-text="d.expiry_date + ' | ' + d.quantity + ' Boxes'"></option>
+                                </template>
+                            </select>
+                        </td>
+                        <td><input name="quantity" class="form-control" min="1" :max="inventory[items[itemIdx].idx][items[itemIdx].invIdex].quantity" :name="itemIdx + '__quantity'" x-model="item.quantity" type="number" required></td>
+                        <td><button type="button" class="btn" @click="removeItem(item)">Remove</button></td>
+                    </tr>
+                </template>
+            </tbody>
+            <tfoot>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th><button class="btn btn-success" type="button" @click="addItem()">+</button></th>
+            </tfoot>
+        <table>
+        <button class="btn btn-success float-right" type="Submit">Dispense</button>
+    </form>
+</div>
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('tableForm', () => ({
+            selected: null,
+            inventory: JSON.parse(`{{inventory|safe}}`),
+            items: [{
+                drug:"",
+                quantity:"",
+                idx: 0,
+                invIdex: 0,
+            }],
+            updateItem(itemIdx){
+                this.items[itemIdx]["idx"] = this.$refs.drugChoice.selectedIndex;
+            },
+            updateInventoryChosen(itemIdex){
+                this.items[itemIdex]["invIdex"] = this.$refs.invChoice.selectedIndex;
+            },
+            addItem() {
+                this.items.push({
+                    drug:"",
+                    quantity:"",
+                    idx: 0,
+                    invIdex: 0,
+                });
+            },
+
+            removeItem(item) {
+                this.items = this.items.filter(i => i !== item);
+            }
+        }));
+    });
+
+</script>
+{% endblock content %}

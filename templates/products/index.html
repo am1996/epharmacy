@@ -1,0 +1,34 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>Products</h1>
+<ul>
+{% if drugs %}
+  {% for item in drugs %}
+    <li><a href="{% url "products:detail_drug" item.id %}">{{ item.name }}</a></li>
+  {% endfor %}
+{% else %}
+    <h4 class="text-center">No Products</h4>
+{% endif %}
+</ul>
+{% if is_paginated %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&q={{query}}">previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&q={{query}}">next</a>
+            {% endif %}
+        </span>
+    </div>
+{% endif %}
+{% if request.user.profile.role == 2 %}
+<a href="{% url 'products:create_drug' %}" type="button" class="btn btn-success btn-floating" style="position: fixed; bottom: 20px; right: 20px;">
+    + Add Product
+</a>
+{% endif %}
+{% endblock content %}

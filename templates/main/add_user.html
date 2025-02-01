@@ -1,0 +1,17 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h2>Add New User</h2>
+<div class="col-md-6 ms-3">
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3>Add User Details</h3>
+    {{ user_form.as_p }}
+
+    <h3>Add Profile Details</h3>
+    {{ profile_form.as_p }}
+
+    <button type="submit" class="btn btn-success">Save Changes</button>
+    </form>
+    <a class="btn btn-danger my-2" href="/">Cancel</a>
+<div class="col-md-6">
+{% endblock %}

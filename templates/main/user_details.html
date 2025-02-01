@@ -1,0 +1,41 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>User Details</h1>
+{% for message in messages %}
+    <p class="alert alert-success">{{ message }}</p>
+{% endfor %}
+<table class="table">
+    <tr>
+        <th>id.</th>
+        <td>{{ user.id }}</td>
+    </tr>
+    <tr>
+        <th>Username.</th>
+        <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+        <th>Fullname.</th>
+        <td>{{ user.first_name }} {{ user.last_name }}</td>
+    </tr>
+    <tr>
+        <th>Email.</th>
+        <td>{{ user.email }}</td>
+    </tr>
+    <tr>
+        <th>Role.</th>
+        <td>{{ user.profile.get_gender }}</td>
+    </tr>
+    <tr>
+        <th>Role.</th>
+        <td>{{ user.profile.get_role }}</td>
+    </tr>
+    <tr>
+        <th>Last Logged in.</th>
+        <td>{{ user.last_login }}</td>
+    </tr>
+    <tr>
+        <th>Date Joined.</th>
+        <td>{{ user.date_joined }}</td>
+    </tr>
+</table>
+{% endblock content %}

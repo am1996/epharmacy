@@ -1,0 +1,79 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<div class="col-12">
+    {% if request.user.profile.role == 1 or request.user.profile.role == 2 %}
+    <table class="table">
+        <tr>
+            <td><b>Order Number:</b> {{ order.id }}</td>
+            <td><b>Order Date:</b> {{ order.order_date }}</td>
+            <td><b>Status:</b>
+                {% if order.status == "1" %}Pending
+                {% elif order.status == "2" %}Under Delivery
+                {% else %}Done
+                {% endif %}
+            </td>
+            {% if order.dispensed_by %}
+            <td><b>Dispensed By:</b>{{ order.dispensed_by.username }}
+            {% endif %}
+        </tr>
+        <tr>
+            <td><b>Customer Username:</b> {{ order.created_by.username }}</td>
+            <td><b>Customer Fullname:</b> {{ order.created_by.fullname }}</td>
+            <td><b>Customer Address:</b> {{ order.created_by.profile.address }}</td>
+        </tr>
+        <tr>
+            <td><b>Customer Phone Number:</b> {{ order.created_by.profile.phone_number }}</td>
+            <td><b>Customer Email:</b> {{ order.created_by.email }}</td>
+            <td></td>
+        </tr>
+    </table>
+    {% endif %}
+    <h2>Order Details</h2>
+    <table class="table">
+        <tr>
+            <td>Name</td>
+            <td>Quantity</td>
+        </tr>
+    {% for item in order.order_items.all %}
+        <tr>
+            <td>{{ item.drug.name }}</td>
+            <td>{{ item.quantity }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    <h2>Dispensed Order Details</h2>
+    <table class="table">
+        <tr>
+            <td>Name</td>
+            <td>Quantity</td>
+            <td>Expiry Date</td>
+        </tr>
+    {% for item in order.dispensed_items.all %}
+        <tr>
+            <td>{{ item.inventory_item.drug_id.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.inventory_item.expiry_date }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    <div>
+        <h5>Order Comment</h5>
+        <hr/>
+        {% if order.comment %}
+            <p>{{ order.comment }}</p>
+        {% else %}
+        <p>No Comment to show.</p>
+        {% endif %}
+    </div>
+    {% if request.user.profile.role == 1 or request.user.profile.role == 2 %}
+        {% if order.status == "1" %}
+            <a class="btn btn-success text-white" href="{% url "user:order_dispense" order.pk %}">Dispense</a>
+        {% elif order.status == "2" %}
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success text-white" onclick="return confirm('do you really want to mark order as delivered?')">Change Status to delivered.</button>
+        </form>
+        {% endif %}
+    {% endif %}
+<div class="col-md-6">
+{% endblock %}

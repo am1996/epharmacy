@@ -1,0 +1,123 @@
+{% extends "../layouts/base.html" %}
+{% load static %}
+{% block header %}
+<script src="{% static 'js/alpine.min.js' %}" defer></script>
+{% endblock header %}
+{% block content %}
+{{errors}}
+<h1>Add to inventory</h1>
+<div x-data="tableForm">
+    <form method="POST">
+        {% csrf_token %}
+        <table  class="table">
+            <thead>
+                <th>Drug</th>
+                <th>Batch No</th>
+                <th>Quantity</th>
+                <th>Pharmacist Price</th>
+                <th>Public Price</th>
+                <th>Manufacturing Date</th>
+                <th>Expiry Date</th>
+                <th></th>
+            </thead>
+            <template x-for="(item,idx) in items">
+                <tr>
+                    <td><input class="form-control" @click="openModal(idx)" x-model="item.drug" type="text" required readonly>
+                    <input :name="idx + '__drug_id'" x-model="item.id" type="text" hidden>
+                    </td>
+                    <td><input class="form-control" :name="idx + '__batch_no'" x-model="item.batchNo" type="text" required></td>
+                    <td><input class="form-control" :name="idx + '__quantity'" x-model="item.quantity" type="number" required></td>
+                    <td><input class="form-control" :name="idx + '__pharmacist_price'" x-model="item.pharmacistPrice" type="number" step="0.01" required></td>
+                    <td><input class="form-control" :name="idx + '__public_price'" x-model="item.publicPrice" type="number"  step="0.01" required></td>
+                    <td><input class="form-control" :name="idx + '__manufacturing_date'" x-model="item.manufacturingDate" type="date" required></td>
+                    <td><input class="form-control" :name="idx + '__expiry_date'" x-model="item.expiryDate" type="Date" required></td>
+                    <td><button type="button" class="btn" @click="removeItem(item)">Remove</button></td>
+                </tr>
+            </template>
+            <tfoot>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th><button class="btn btn-success" type="button" @click="addItem()">+</button></th>
+            </tfoot>
+        <table>
+        <button class="btn btn-success float-right" type="Submit">Submit</button>
+    </form>
+    <div class="modal-fullscreen" 
+        x-show="showModal"
+        x-transition:enter="fade-enter fade-enter-active"
+        x-transition:leave="fade-leave-active"
+        x-cloak>
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Choose Drug</h5>
+              <button @click="closeModal()" type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <select x-ref="drugs" class="form-control" multiple>
+                {% for drug in drugs %}
+                    <option value="{{drug.id}}">{{drug.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button type="button" @click="closeModal()" class="btn btn-success" >Choose</button>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('tableForm', () => ({
+            items: [{
+                id:"",
+                drug:"",
+                quantity:"",
+                batchNo:"",
+                pharmacistPrice:"",
+                publicPrice:"",
+                manufacturingDate:"",
+                expiryDate:""
+            }],
+            chosenItem: 0,
+            showModal: false,
+            openModal(idx){
+                this.chosenItem = idx;
+                this.showModal = true;
+            },
+            closeModal(){
+                this.items[this.chosenItem].drug = this.$refs.drugs.options[this.$refs.drugs.selectedIndex].text;
+                this.items[this.chosenItem].id = this.$refs.drugs.value;
+                this.showModal = false;
+            },
+            submit(){
+                console.log(this.items);
+            },
+            addItem() {
+                this.items.push({
+                    drug:"",
+                    quantity:"",
+                    batchNo:"",
+                    pharmacistPrice:"",
+                    publicPrice:"",
+                    manufacturingDate:"",
+                    expiryDate:""
+                });
+            },
+
+            removeItem(item) {
+                this.items = this.items.filter(i => i !== item);
+            }
+        }));
+    });
+
+</script>
+{% endblock content %}

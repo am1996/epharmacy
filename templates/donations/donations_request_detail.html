@@ -1,0 +1,64 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>Donation Request Details</h1>
+<div class="row">
+    <table class="table col-md-8 col-xs-12 offset-md-2">
+        <tr>
+            <th>Name:</th>
+            <td>{{ donation_request.donation.product_name }}</td>
+        </tr>
+        <tr>
+            <th>Quantity:</th>
+            <td>{{ donation_request.quantity }}</td>
+        </tr>
+        <tr>
+            <th>Status:</th>
+            <td>{{ donation_request.get_status }}</td>
+        </tr>
+        {% if request.user.profile.role == 2 %}
+        <tr>
+            <th>Comment:</th>
+            <td>{{ donation_request.comment }}</td>
+        </tr>
+        <tr>
+            <th>Attachment:</th>
+            <td><a target="_blank" href="/media/{{ donation_request.attachment }}">Link</td>
+        </tr>
+        {% endif %}
+        {% if request.user.profile.role == 2 and donation_request.status == 1 %}
+        <tr>
+            <th>
+                <form method="post" class="float">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="0">
+                    <button onclick="return confirm('Do you want to reject this donation request?')" type="submit" class="btn btn-danger btn-sm">Reject Donation Request</a>
+                </form>
+            </th>
+            <td>
+                <form method="post" class="float">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="2">
+                    <button onclick="return confirm('Do you want to approve this donation request?')" type="submit" class="btn btn-success btn-sm">Approve Donation Request</a>
+                </form>
+            </td>
+        </tr>
+        {% elif request.user.profile.role == 2 and donation_request.status == 2 %}
+        <tr>
+            <th>
+                <form method="post" class="float">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="3">
+                    <button onclick="return confirm('Do you want to reject this donation request?')" type="submit" class="btn btn-success btn-sm">Donation Delivered</a>
+                </form>
+            </th>
+        {% elif request.user.profile.role == 3 and donation.status == "2" %}
+        <tr>
+            <th></th>
+            <td>
+                <a href='{% url "donations:donations_request" donation.id %}' class="btn btn-success btn-sm">Request Donation</a>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+{% endblock content %}

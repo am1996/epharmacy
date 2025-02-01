@@ -1,0 +1,45 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h2>Profile</h2>
+<div class="d-flex flex-wrap">
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <img class="img-fluid" src="/media/{{ request.user.profile.photo }}" alt="profile Image"/>
+    </div>
+    <div class="col-md-8 col-sm-6 col-sx-12">
+        <p>
+            <b>Fullname:</b> {{ request.user.firstname }} {{ request.user.lastname }}
+        </p>
+        <p>
+            <b>Username:</b> {{ request.user.username }}
+        </p>
+        <p>
+            <b>Email:</b> {{ request.user.email }}
+        </p>
+        <p>
+            <b>Address:</b> 
+            {{ request.user.profile.address }}
+        </p>
+        <p>
+            <b>Phone Number:</b> 
+            {{ request.user.profile.phone_number }}
+        </p>
+        <p>
+            <b>Gender:</b> 
+            {% if request.user.profile.gender == 1 %} Male 
+            {% elif request.user.profile.role == 2 %} Female
+            {% endif %}
+        </p>
+        <p>
+            <b>Role:</b> 
+            {% if request.user.profile.role == 1 %} Admin 
+            {% elif request.user.profile.role == 2 %} Pharmacist
+            {% else %} Client
+            {% endif %}
+        </p>
+        <p>
+            <a href="{% url "user:profile_edit" %}" class="btn btn-success">Edit Profile</a>
+            <a href="{% url "user:changepassword" %}" class="btn btn-warning">Change Password</a>
+        </p>
+    </div>
+</div>
+{% endblock content %}

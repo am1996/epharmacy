@@ -1,0 +1,46 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>List Of Users</h1>
+{% for message in messages %}
+    <p class="alert alert-success">{{ message }}</p>
+{% endfor %}
+<table class="table">
+    <tr>
+        <th>id.</th>
+        <th>Username.</th>
+        <th>Role</th>
+        <th>Creation Date</th>
+    </tr>
+    {% if users %}
+    {% for item in users %}
+    <tr>
+        <td>{{ item.id }}</td>
+        <td><a href="{% url 'details_user' item.pk %}">{{ item.username }}</a></td>
+        <td>{{ item.profile.role }}</td>
+        <td>{{ item.date_joined }}</td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4">No Users found</td>
+    </tr>
+    {% endif %}
+</table>
+{% if is_paginated %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+            {% endif %}
+        </span>
+    </div>
+{% endif %}
+{% endblock content %}

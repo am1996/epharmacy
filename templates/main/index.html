@@ -1,0 +1,43 @@
+{% extends "../layouts/base.html" %}
+{% load static %}
+{% block content %}
+{{errors}}
+<h1>Cart</h1>
+
+{% if cart %}
+<div class="d-flex flex-wrap" x-data="orderDetails">
+    {% for item in cart %}
+    <div class="col-md-4 col-sm-6">
+        <div class="card my-2 shadow">
+            <img class="card-img-top" src="/media/{{ item.img }}" alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text"><b>Quantity:</b> {{ item.quantity }}</p>
+                    <p class="card-text"><b>Price:</b> {{ item.price }} L.E</p>
+                </p>
+                <div class="card-footer text-right">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="text" name="uid" value="{{ item.uid }}" hidden/>
+                        <button type="submit" class="btn btn-danger">Remove from Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<footer class="footer mt-auto bg-light fixed-bottom">
+    <form method="POST" action="/cart/placeorder">
+        {% csrf_token %}
+        <div class="d-flex">
+            <p class="mr-auto m-2"><b>Total Value:</b> {{ total }} L.E</p>
+            <button type="submit" class="btn btn-success">Place Order</button>
+        </div>
+    </form>
+</footer>
+{% else %}
+<h3 class="text-center">Cart is Empty</h3>
+{% endif %}
+{% endblock content %}

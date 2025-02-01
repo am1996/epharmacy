@@ -1,0 +1,169 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<h1>Pending Donations Requests</h1>
+{% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+        <p class="alert alert-danger">{{ message }}</p>
+        {% else %}
+        <p class="alert alert-success">{{ message }}</p>
+    {% endif %}
+{% endfor %}
+{# Pending Donations Requests #}
+<table class="table">
+    <tr>
+        <th>id.</th>
+        <th>Product Name.</th>
+        <th>Quantity</th>
+        <th>Created At</th>
+    </tr>
+    {% if don_req_pending %}
+    {% for item in don_req_pending %}
+    <tr>
+        <td>{{ item.id }}</td>
+        <td><a href="{% url "donations:donations_request_detail" item.id %}">{{ item.donation.product_name }}</a></td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.created_at }}</td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4">No pending donations request found</td>
+    </tr>
+    {% endif %}
+</table>
+<div class="pagination">
+    <span class="step-links">
+        {% if don_req_pending.has_previous %}
+            <a href="?drp={{ don_req_pending.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ don_req_pending.number }} of {{ don_req_pending.paginator.num_pages }}
+        </span>
+
+        {% if don_req_pending.has_next %}
+            <a href="?drp={{ don_req_pending.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{# Approved Donations Requests #}
+<h1>Approved Donations Requests</h1>
+<table class="table">
+    <tr>
+        <th>id.</th>
+        <th>Product Name.</th>
+        <th>Quantity</th>
+        <th>Created At</th>
+    </tr>
+    {% if don_req_approved %}
+    {% for item in don_req_approved %}
+    <tr>
+        <td>{{ item.id }}</td>
+        <td><a href="{% url "donations:donations_request_detail" item.id %}">{{ item.donation.product_name }}</a></td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.created_at }}</td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4">No approved donations request found</td>
+    </tr>
+    {% endif %}
+</table>
+<div class="pagination">
+    <span class="step-links">
+        {% if don_req_approved.has_previous %}
+            <a href="?drp={{ don_req_approved.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ don_req_approved.number }} of {{ don_req_approved.paginator.num_pages }}
+        </span>
+
+        {% if don_req_approved.has_next %}
+            <a href="?drp={{ don_req_approved.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{# Sent Donations Requests #}
+<h1>Sent Donations Requests</h1>
+<table class="table">
+    <tr>
+        <th>id.</th>
+        <th>Product Name.</th>
+        <th>Quantity</th>
+        <th>Created At</th>
+    </tr>
+    {% if don_req_sent %}
+    {% for item in don_req_sent %}
+    <tr>
+        <td>{{ item.id }}</td>
+        <td><a href="{% url "donations:donations_request_detail" item.id %}">{{ item.donation.product_name }}</a></td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.created_at }}</td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4">No sent donations request found</td>
+    </tr>
+    {% endif %}
+</table>
+<div class="pagination">
+    <span class="step-links">
+        {% if don_req_sent.has_previous %}
+            <a href="?drp={{ don_req_sent.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ don_req_sent.number }} of {{ don_req_sent.paginator.num_pages }}
+        </span>
+
+        {% if don_req_sent.has_next %}
+            <a href="?drp={{ don_req_sent.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{# Rejected Donations Requests #}
+<h1>Rejected Donations Requests</h1>
+<table class="table">
+    <tr>
+        <th>id.</th>
+        <th>Product Name.</th>
+        <th>Quantity</th>
+        <th>Created At</th>
+    </tr>
+    {% if don_req_rejected %}
+    {% for item in don_req_rejected %}
+    <tr>
+        <td>{{ item.id }}</td>
+        <td><a href="{% url "donations:donations_request_detail" item.id %}">{{ item.donation.product_name }}</a></td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.created_at }}</td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4">No rejected donations request found</td>
+    </tr>
+    {% endif %}
+</table>
+<div class="pagination">
+    <span class="step-links">
+        {% if don_req_rejected.has_previous %}
+            <a href="?drp={{ don_req_rejected.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ don_req_rejected.number }} of {{ don_req_rejected.paginator.num_pages }}
+        </span>
+
+        {% if don_req_rejected.has_next %}
+            <a href="?drp={{ don_req_rejected.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock content %}

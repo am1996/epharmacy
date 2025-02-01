@@ -1,0 +1,51 @@
+{% extends "../layouts/base.html" %}
+{% load static %}
+{% block content %}
+<h1>Available Now.</h1>
+<div class="row d-flex flex-wrap">
+    {% for item in inventory %}
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="card m-2">
+            <img class="card-img-top" src="/media/{{ item.drug_id__img }}" alt="Durg">
+            <div class="card-body">
+                <h6 class="card-title"><b>{{ item.drug_id__name }}</b></h6>
+                <p class="card-text">Available Quantity: {{item.total_quantity}}</p>
+                <a href="{% url 'orders:details_orders' item.drug_id %}" class="btn btn-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if is_paginated %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+{% endif %}
+<h1>Recommendations Based on Your Previous Orders.</h1>
+<div class="row d-flex flex-wrap">
+    {% for item in most_ordered %}
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="card m-2">
+            <img class="card-img-top" src="/media/{{ item.drug.img }}" alt="drug">
+            <div class="card-body">
+                <h6 class="card-title"><b>{{ item.drug.name }}</b></h6>
+                <p class="card-text">Available Quantity: {{item.total_quantity}}</p>
+                <a href="{% url 'orders:details_orders' item.drug_id %}" class="btn btn-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

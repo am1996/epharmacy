@@ -1,0 +1,57 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+{% include "../layouts/includes/export.html" %}
+
+<h2 id="head">{{heading}}</h2>
+<table class="table table-striped" id="table-to-export">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>No Of {{item}}</th>
+            <th>Joined On</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.count }}</td>
+            <td>{{ user.date_joined }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<button id="export-pdf" class="btn btn-warning">Export to PDF 📄</button>
+<button id="export-excel" class="btn btn-success">Export to Excel 📊</button>
+<script>
+    document.getElementById('export-pdf').addEventListener('click', function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Get the table HTML
+        const table = document.getElementById('table-to-export');
+        const head = document.getElementById('head');
+
+        // Use jsPDF's autoTable plugin to convert the table into a PDF
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);  // H1 size
+
+        // Add the title at the top
+        doc.text(head.innerText, 10, 10);
+        doc.autoTable({ html: '#table-to-export' });
+
+        // Save the PDF
+        doc.save('export.pdf');
+    });
+    document.getElementById('export-excel').addEventListener('click', function() {
+        const table = document.getElementById('table-to-export');
+        const wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
+        XLSX.writeFile(wb, 'table.xlsx');
+        doc.save('table.xlsx');
+    });
+</script>
+{% endblock content %}
