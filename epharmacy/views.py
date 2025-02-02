@@ -82,7 +82,9 @@ class AdminUserCreateView(AdminRequiredMixin,View):
         profile_form = ProfileAddForm(request.POST)
 
         if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
+            user = user_form.save(commit=False)
+            user.set_password(user_form.cleaned_data['password'])
+            user.save()
             profile_form.save()
             return redirect('home') # Redirect to the home page
 
